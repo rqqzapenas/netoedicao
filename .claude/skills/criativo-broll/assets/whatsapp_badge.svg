@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
+  <!-- Ícone verde de conversa com telefone + badge vermelho "1" (sticker do CTA) -->
+  <g transform="translate(20,40)">
+    <!-- contorno branco do sticker -->
+    <path d="M170 10 A150 150 0 1 1 64 266 L20 330 L44 248 A150 150 0 0 1 170 10 Z" fill="#ffffff"/>
+    <!-- balão verde -->
+    <path d="M170 26 A134 134 0 1 1 72 252 L42 300 L58 244 A134 134 0 0 1 170 26 Z" fill="#00a20d"/>
+    <!-- telefone branco -->
+    <path d="M112 104 c10-10 24-10 30 2 l18 34 c5 10 2 20-6 26 l-12 9 c10 24 32 46 56 56 l9-12 c6-8 16-11 26-6 l34 18 c12 6 12 20 2 30 l-16 16 c-14 14-38 16-60 6 c-46-20-82-56-102-102 c-10-22-8-46 6-60 z" fill="#ffffff"/>
+  </g>
+  <!-- badge -->
+  <circle cx="300" cy="92" r="66" fill="#ffffff"/>
+  <circle cx="300" cy="92" r="56" fill="#e0141e"/>
+  <text x="300" y="121" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="700" font-size="84" fill="#ffffff">1</text>
+</svg>

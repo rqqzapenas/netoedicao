@@ -3,3 +3,7 @@ renders/
 *.mp4
 !assets/**/*.mp4
 .hyperframes/
+*.wav
+*.mp3
+broll/
+analise_*/

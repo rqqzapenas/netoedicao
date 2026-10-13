@@ -1,0 +1,4 @@
+{
+  "_comentario": "Voz e música padrão de cada produto. 'voz'/'musica' = caminho do arquivo (relativo ao spec.json ou absoluto); 'voz_id' = id da voz no MiniMax/ElevenLabs para gerar novas narrações. Todo criativo do mesmo produto usa a mesma voz e a mesma música.",
+  "gelatos": { "voz_id": "", "voz": "", "musica": "", "musica_offset": 0 }
+}

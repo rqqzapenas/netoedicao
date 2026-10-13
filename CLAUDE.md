@@ -15,5 +15,11 @@ TikTok, Facebook e Instagram. Formato padrão: vertical 1080x1920 (9:16).
   (`npm i gsap@3.14.2`) e referencie uma cópia local (ex.: `vendor/gsap.min.js`) — nunca `<script src="https://cdn...">`.
 - Não há whisper/TTS/MusicGen locais; áudio e trilhas vêm de arquivos que o usuário enviar.
 
+## Método de edição
+Use SEMPRE a skill `criativo-broll` (`.claude/skills/criativo-broll/SKILL.md`) para montar qualquer criativo.
+Resumo: voz feminina IA do início ao fim, cenas ≤ 2 s só com corte seco, reaproveitar partes diferentes do
+mesmo b-roll, música alegre entrando seca no segundo 22, sem legendas, CTA "Clique no botão abaixo" +
+ícone do WhatsApp ~4 s antes da voz acabar, cauda de ~11 s só música. Voz e música padrão por produto em `produtos.json`.
+
 ## Aprendizados do usuário
-(preencher conforme o treinamento — estilo, ritmo de corte, hooks, legendas, CTA)
+- Criativos do mesmo produto usam sempre a mesma voz e a mesma música.
