@@ -22,9 +22,9 @@ MAX_CENA = 2.0           # regra do dono: nenhuma cena passa de 2 s
 MIN_CENA = 0.2           # flash mais curto permitido
 VOZ_INICIO = 0.2         # a voz entra praticamente no primeiro frame (referências: 0,18–0,25 s)
 CAUDA = 9.0              # só música + CTA + b-roll depois da voz (referências: 6,4 s salsas, 11 s gelato)
-CTA_ANTES_DA_FALA = 0.4  # CTA visual entra ~0,3–0,6 s ANTES da voz falar "clique no botão"
+CTA_ANTES_DA_FALA = 0.2  # CTA visual entra junto da frase do CTA (30 criativos: salsas −0,15…+0,38 s; gelato ~0,4–0,7 s antes)
 LUFS_VOZ = -16.0
-LUFS_MUSICA = -30.0      # 12–18 LU abaixo da voz nas referências, constante do começo ao fim
+MUSICA_LU = 16.0         # música abaixo da voz (30 criativos: salsas 17,6 LU, gelato 14,8 LU), constante do começo ao fim
 FRASES_CTA = ["clique no botao", "clica no botao", "clique no botão", "dale clic", "haz clic", "da clic",
               "botao aqui embaixo", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
 CTA_PADRAO = {"pt": ["Clique no", "botão abaixo"], "es": ["Haz clic en", "el botón de abajo"]}
@@ -86,11 +86,11 @@ def preparar_voz(src, dst, apertar_pausas=False):
         print(f"ATENÇÃO: a voz encolheu de {bruto:.1f}s para {final:.1f}s — confira se nenhuma palavra foi comida.")
 
 
-def preparar_musica(src, dst, offset, dur):
+def preparar_musica(src, dst, offset, dur, musica_lu=MUSICA_LU):
     """Trecho da música a partir de `offset` (s dentro do arquivo), com loop se faltar, nível constante.
     Entra e sai seca (15 ms anti-clique)."""
     sh(["ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{offset}", "-i", str(src), "-t", f"{dur:.3f}",
-        "-af", f"loudnorm=I={LUFS_MUSICA}:TP=-2:LRA=11,afade=t=in:d=0.015,"
+        "-af", f"loudnorm=I={LUFS_VOZ - musica_lu}:TP=-2:LRA=11,afade=t=in:d=0.015,"
                f"afade=t=out:st={max(dur - 0.015, 0):.3f}:d=0.015",
         "-ar", "48000", "-ac", "2", str(dst)])
 
@@ -335,7 +335,7 @@ def main():
     if spec.get("musica"):
         musica = {"inicio": float(spec.get("musica_inicio", 0.0))}
         preparar_musica((base / spec["musica"]).resolve(), out / "assets" / "musica.wav",
-                        float(spec.get("musica_offset", 22.0)), total - musica["inicio"])
+                        float(spec.get("musica_offset", 22.0)), total - musica["inicio"], float(spec.get("musica_lu", MUSICA_LU)))
 
     # ---- b-roll
     arquivos = []

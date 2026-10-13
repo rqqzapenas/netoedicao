@@ -12,18 +12,19 @@ TikTok, Facebook e Instagram. Formato padrão: vertical 1080x1920 (9:16).
 ## Particularidades deste ambiente (sessão cloud)
 - Rode `bash scripts/setup.sh` no início da sessão (Chrome do render + transcritor Whisper local;
   `--tudo` também instala o separador voz/música).
-- CDNs (cdn.jsdelivr.net, unpkg), HuggingFace e Google Drive são bloqueados pela rede. Libs via npm/pip e
-  referenciadas localmente (ex.: `assets/gsap.min.js`); modelos vêm de releases do GitHub.
+- Internet liberada. Mesmo assim, o HTML do render referencia tudo localmente (ex.: `assets/gsap.min.js`).
+  Vídeos públicos do Drive: baixar por `drive.usercontent.google.com` (o conector só baixa até 10 MB).
 
 ## Método de edição — SEMPRE a base
 Todo criativo usa a skill `criativo-broll` (`.claude/skills/criativo-broll/SKILL.md`). Ela é a memória do
 método e é alimentada a cada referência nova (`references/`). Resumo:
-- **Hook visual = hook falado** (fala "estos frasquitos" → mostra os frasquitos) e cada coisa concreta que a
-  voz nomeia aparece na tela na mesma hora.
+- **Hook visual = hook falado** (fala "estos frasquitos" → mostra os frasquitos; gancho de história → produto
+  sendo feito) e cada coisa concreta que a voz nomeia aparece na tela na mesma hora.
 - Voz feminina IA do início ao fim; cenas ≤ 2 s só com corte seco; partes diferentes do mesmo b-roll.
-- Música alegre por baixo desde o início (faixa a partir do 0:22), 12–18 LU abaixo da voz, volume constante.
-- Sem legendas; CTA "Clique no botão abaixo" + ícone do WhatsApp entra ~0,4 s antes da voz falar o CTA;
-  cauda de 6–11 s só música.
+- Música alegre por baixo desde o 0:00 (faixa a partir do seu 0:22), volume constante; perfil fixo por produto
+  (salsas: música 17,5 LU abaixo da voz, cauda 6,3 s; gelato: 14,8 LU, cauda 10,8 s) — medido nos 30 criativos.
+- Sem legendas; CTA "Clique no botão abaixo" + ícone do WhatsApp entra junto da frase falada do CTA;
+  cauda só música.
 
 ## Aprendizados do usuário
 - O dono SEMPRE manda a voz (MiniMax/ElevenLabs) e a música de cada criativo — mesma voz e mesma música para

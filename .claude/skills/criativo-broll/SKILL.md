@@ -19,6 +19,8 @@ com legendas, zooms, efeitos ou transições que o método não usa. Na dúvida,
 frame a frame em `references/`:
 - `anatomia-salsas.md` — o criativo que **mais faturou** (México, espanhol). Leia primeiro.
 - `anatomia-gelato.md` — criativo Brasil (português).
+- `lote-drive-30.md` — **os 30 criativos das duas ofertas medidos**: perfil de mixagem por produto e as
+  famílias de gancho com a imagem que cada uma usa. Tabela por vídeo em `lote_drive_30_medidas.tsv`.
 
 ## A regra nº 1: o que a voz fala, a tela mostra
 
@@ -33,6 +35,17 @@ Exemplos medidos: "3 ingredientes" → açúcar/ovo/leite; "pote de 1 litro" →
 "chocolate" → raspas de chocolate; "mermeladas de chile" → mermelada de chile; "chile de árbol" →
 salsa caindo com chiles de árbol em volta; "habanero" → habaneros na mão. Frases abstratas (história,
 autoridade, "é técnica") ficam com b-roll bonito de processo/variedade.
+
+**Quando a frase de abertura não nomeia nada visível** (história de dor: "me demitiram porque engravidei",
+"meu ex-marido disse…", "trabalhava 12 h num hospital"), a abertura mostra **o produto sendo feito ou
+servido**, no plano mais apetitoso: a virada, o "hoje". Não se ilustra a dor. Medido nos 30 criativos;
+a tabela de famílias de gancho × imagem está em `references/lote-drive-30.md`. Resumo:
+- demonstrativo + objeto ("esses potinhos") → o objeto;
+- ingredientes ("un puñito de chiles y una cebolla") → os ingredientes, na ordem falada;
+- "vem comigo" → pessoa ou produção;
+- inimigo/mercado ("conservadores", "pote do mercado") → o inimigo;
+- promessa de "100 receitas" → variedade;
+- lista → o 1º item.
 
 **Antes de montar, leia a copy e marque cada substantivo concreto.** Cada um vira uma âncora de
 sincronia (`sincronia` no spec). O gancho vira o clipe `gancho`. Se não houver b-roll para um item
@@ -73,7 +86,7 @@ importante, avise o usuário antes de renderizar.
 
 ### Formato
 - 1080x1920, 30 fps, H.264 + AAC. B-roll em tela cheia (`object-fit: cover`), sem bordas nem barras pretas.
-- Duração = fim da voz + cauda (as referências têm 82,5 s e 87 s).
+- Duração = fim da voz + cauda. Nos 30: salsas 70–130 s, gelato 44–110 s. Quem define é a copy.
 
 ### Cortes
 - **Máximo 2,0 s por cena** (regra do dono). Mediana alvo ~1,35 s.
@@ -121,20 +134,29 @@ importante, avise o usuário antes de renderizar.
   de respiro no final.
 
 ### Música (sempre enviada pelo dono)
-- Alegre, coerente com o produto, ~100–115 BPM (gelato 110, salsas 105). **O dono manda a música** (a
-  mesma por produto).
-- **Toca por baixo desde o início do vídeo** até o último frame, sem fade-in e sem fade-out.
-- **"Iniciando no 00:00:22" = começar a faixa no ponto 0:22 da música** (`musica_offset: 22`).
-  - Medido: nas duas referências a batida já existe no segundo 1, no mesmo andamento e no mesmo nível da
-    cauda.
-  - Pendente de confirmação do dono. Se ele disser que a música só deve entrar no segundo 22 do vídeo,
-    use `musica_inicio: 22, musica_offset: 0`.
-- Nível constante **12–18 LU abaixo da voz** (montagem: −30 LUFS), sem ducking, sem subir na cauda.
+- Alegre, coerente com o produto. **Uma música por produto**: 15/15 salsas a 105 BPM e 15/15 gelato a
+  110 BPM. O dono manda o arquivo.
+- **Toca desde o 0:00 do vídeo até o último frame** (batida presente no início em **30/30** criativos), sem
+  fade-in e sem fade-out.
+- **Volume constante do começo ao fim** (0–20 s ≈ sob a voz ≈ cauda), sem ducking e sem subir na cauda.
+- "Iniciando no 00:00:22" = a faixa começa no ponto 0:22 da música (`musica_offset: 22`, padrão).
+  - Se o dono disser outro ponto, mude só o `musica_offset`.
+  - Ela nunca entra só no segundo 22 do vídeo: os 30 têm música desde o início.
+
+### Perfil de mixagem por produto (medido nos 30)
+| Produto | Música abaixo da voz (`musica_lu`) | Cauda só música (`cauda`) |
+|---|---|---|
+| Salsas (MX) | **17,5** (16,9–21,1) | **6,3 s** (3,4–6,4) |
+| Gelato (BR) | **14,8** (13,9–15,4) | **10,8 s** (6,4–11,1) |
+| Produto novo | 16 (meio-termo) | 9 s. Depois de definir, use o mesmo em todos os criativos do produto. |
+
+A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_lu`.
 
 ### Texto na tela
 - **Zero legenda durante a narração.** O único texto é o CTA.
-- **Quando entra**: 0,4–0,6 s **antes** da voz falar a frase do CTA ("Clique no botão" / "dale clic al
-  botón"). O script acha a frase na transcrição. Fica até o fim (13–15 s na tela).
+- **Quando entra**: **junto da frase do CTA** ("Clique no botão" / "dale clic al botón"), de 0 a 0,6 s
+  antes dela. Nos 30: salsas −0,15…+0,38 s; gelato ~0,1–0,7 s. O script acha a frase na transcrição e
+  põe o CTA 0,2 s antes. Fica até o fim.
 - **Texto**: pt "Clique no / botão abaixo"; es "Haz clic en / el botón de abajo".
   - **Fonte: a "Sistema" do CapCut** (pedido do dono, a do texto padrão "Texto padrão" do CapCut).
     - Comparada lado a lado, a mais parecida é a **Montserrat SemiBold** (mesmo "a" de dois andares, "o"
@@ -150,7 +172,8 @@ importante, avise o usuário antes de renderizar.
   - `digitar` (salsas): texto aparece letra a letra e o ícone em fade, ~0,5 s.
 
 ### Cauda
-- Só música + CTA + b-roll por **6–11 s** depois que a voz acaba (salsas 6,4 s; gelato 11 s). Padrão: 9 s.
+- Só música + CTA + b-roll depois que a voz acaba. A duração é **fixa por produto** (tabela acima): salsas
+  6,3 s, gelato 10,8 s.
 
 ## Fluxo de trabalho
 
@@ -174,6 +197,7 @@ importante, avise o usuário antes de renderizar.
      "voz": "voz.mp3",
      "musica": "musica.mp3",
      "musica_offset": 22,
+     "musica_lu": 17.5,
      "broll_dir": "broll",
      "gancho": ["gancho_frascos.mp4"],
      "sincronia": [
@@ -181,7 +205,7 @@ importante, avise o usuário antes de renderizar.
        {"fala": "habanero", "broll": "textura_habanero.mp4"}
      ],
      "cta_entrada": "digitar",
-     "cauda": 9
+     "cauda": 6.3
    }
    ```
    Opcionais:
@@ -221,22 +245,14 @@ importante, avise o usuário antes de renderizar.
     do CTA, cauda, voz × música (LU) e se a batida toca desde o início.
   - Fecha com a mediana do lote. Rode com `bash scripts/setup.sh --tudo` antes (spleeter para os níveis).
   - Os 30 criativos do Drive (15 salsas MX + 15 gelato BR) estão listados em
-    `references/drive_criativos.tsv`. Baixar exige o domínio `drive.usercontent.google.com` liberado na
-    rede do ambiente (os arquivos são públicos). O conector do Drive só baixa até 10 MB.
+    `references/drive_criativos.tsv` e **já foram analisados** (`references/lote-drive-30.md`). O
+    download direto usa `drive.usercontent.google.com` (arquivos públicos). O conector do Drive só serve
+    para listar, porque baixa no máximo 10 MB.
 - Separar voz e música à mão:
   `MODEL_PATH=/opt/ml/pretrained_models /opt/ml/sp/bin/spleeter separate -p spleeter:2stems -o saida/ video.wav`.
 - Padrão novo e consistente em 2+ criativos → **adicione aqui e em `references/`** com o número medido e
   o porquê. Esta skill é a memória do método.
 
 ## Pendências
-- **Lote do Drive** (30 criativos): pronto para rodar assim que `drive.usercontent.google.com` estiver
-  liberado. Depois, consolide a mediana do lote nesta skill, principalmente % de cenas > 2 s, cauda e
-  antecedência do CTA. Até agora (2 referências): cauda 6,4–11 s, CTA 0,38–0,41 s antes da fala, música
-  14–17,5 LU abaixo da voz e batida presente desde o início.
-- **Projeto do CapCut** `ad2_gelatos`: precisa do controle do computador (Claude desktop com "Uso do
-  computador" ligado e o computador escolhido em Dispositivos) ou do zip da pasta.
-  - Ler `draft_info.json`: `tracks` → segmentos com `target_timerange`/`source_timerange` em µs,
-    `materials.videos/audios`, volumes, velocidade, fontes de texto.
-  - Confirma o ponto de início da música, os volumes exatos e a fonte "Sistema".
-- Confirmar com o dono o significado de "música iniciando no 00:00:22" (ver Música).
 - Busca de b-roll no TikTok: skill futura.
+- Se o dono mandar o arquivo da fonte "Sistema" do CapCut, troque a Montserrat no `@font-face`.
