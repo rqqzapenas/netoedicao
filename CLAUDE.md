@@ -10,16 +10,22 @@ TikTok, Facebook e Instagram. Formato padrão: vertical 1080x1920 (9:16).
   `npx hyperframes render -o saida.mp4`.
 
 ## Particularidades deste ambiente (sessão cloud)
-- Rode `scripts/setup.sh` no início da sessão (baixa o Chrome headless do render).
-- CDNs (cdn.jsdelivr.net, unpkg) são bloqueados pela rede. Instale libs via npm
-  (`npm i gsap@3.14.2`) e referencie uma cópia local (ex.: `vendor/gsap.min.js`) — nunca `<script src="https://cdn...">`.
-- Não há whisper/TTS/MusicGen locais; áudio e trilhas vêm de arquivos que o usuário enviar.
+- Rode `bash scripts/setup.sh` no início da sessão (Chrome do render + transcritor Whisper local;
+  `--tudo` também instala o separador voz/música).
+- CDNs (cdn.jsdelivr.net, unpkg), HuggingFace e Google Drive são bloqueados pela rede. Libs via npm/pip e
+  referenciadas localmente (ex.: `assets/gsap.min.js`); modelos vêm de releases do GitHub.
 
-## Método de edição
-Use SEMPRE a skill `criativo-broll` (`.claude/skills/criativo-broll/SKILL.md`) para montar qualquer criativo.
-Resumo: voz feminina IA do início ao fim, cenas ≤ 2 s só com corte seco, reaproveitar partes diferentes do
-mesmo b-roll, música alegre entrando seca no segundo 22, sem legendas, CTA "Clique no botão abaixo" +
-ícone do WhatsApp ~4 s antes da voz acabar, cauda de ~11 s só música. Voz e música padrão por produto em `produtos.json`.
+## Método de edição — SEMPRE a base
+Todo criativo usa a skill `criativo-broll` (`.claude/skills/criativo-broll/SKILL.md`). Ela é a memória do
+método e é alimentada a cada referência nova (`references/`). Resumo:
+- **Hook visual = hook falado** (fala "estos frasquitos" → mostra os frasquitos) e cada coisa concreta que a
+  voz nomeia aparece na tela na mesma hora.
+- Voz feminina IA do início ao fim; cenas ≤ 2 s só com corte seco; partes diferentes do mesmo b-roll.
+- Música alegre por baixo desde o início (faixa a partir do 0:22), 12–18 LU abaixo da voz, volume constante.
+- Sem legendas; CTA "Clique no botão abaixo" + ícone do WhatsApp entra ~0,4 s antes da voz falar o CTA;
+  cauda de 6–11 s só música.
 
 ## Aprendizados do usuário
-- Criativos do mesmo produto usam sempre a mesma voz e a mesma música.
+- O dono SEMPRE manda a voz (MiniMax/ElevenLabs) e a música de cada criativo — mesma voz e mesma música para
+  todos os criativos de um produto. Nunca gerar nem trocar por conta própria.
+- Versões oficiais: conferir o MP4 antes de entregar (ícone do CTA reto, voz inteira até a última palavra).

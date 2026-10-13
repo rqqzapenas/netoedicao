@@ -1,15 +1,15 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" width="400" height="400">
-  <!-- Ícone verde de conversa com telefone + badge vermelho "1" (sticker do CTA) -->
-  <g transform="translate(20,40)">
-    <!-- contorno branco do sticker -->
-    <path d="M170 10 A150 150 0 1 1 64 266 L20 330 L44 248 A150 150 0 0 1 170 10 Z" fill="#ffffff"/>
-    <!-- balão verde -->
-    <path d="M170 26 A134 134 0 1 1 72 252 L42 300 L58 244 A134 134 0 0 1 170 26 Z" fill="#00a20d"/>
-    <!-- telefone branco -->
-    <path d="M112 104 c10-10 24-10 30 2 l18 34 c5 10 2 20-6 26 l-12 9 c10 24 32 46 56 56 l9-12 c6-8 16-11 26-6 l34 18 c12 6 12 20 2 30 l-16 16 c-14 14-38 16-60 6 c-46-20-82-56-102-102 c-10-22-8-46 6-60 z" fill="#ffffff"/>
-  </g>
-  <!-- badge -->
-  <circle cx="300" cy="92" r="66" fill="#ffffff"/>
-  <circle cx="300" cy="92" r="56" fill="#e0141e"/>
-  <text x="300" y="121" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="700" font-size="84" fill="#ffffff">1</text>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="-2.4 -3.6 30 30" width="400" height="400">
+  <!-- Sticker do CTA, replicado do criativo de referência: balão verde sólido #009B01 com contorno branco
+       grosso, telefone branco grande e badge vermelho "1" com borda branca no canto superior direito.
+       Glifo do balão/telefone: simple-icons (CC0). -->
+  <defs>
+    <path id="balao" d="M20.464 3.488A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/>
+    <path id="fone" d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347"/>
+  </defs>
+  <use href="#balao" fill="#ffffff" stroke="#ffffff" stroke-width="2.6" stroke-linejoin="round"/>
+  <use href="#balao" fill="#009b01"/>
+  <use href="#fone" fill="#ffffff" transform="translate(12 11.9) scale(1.42) translate(-12 -11.9)"/>
+  <circle cx="21.6" cy="2.4" r="4.9" fill="#ffffff"/>
+  <circle cx="21.6" cy="2.4" r="4.1" fill="#cc1214"/>
+  <text x="21.6" y="4.75" text-anchor="middle" font-family="Montserrat, Arial, sans-serif" font-weight="700" font-size="6.6" fill="#ffffff">1</text>
 </svg>

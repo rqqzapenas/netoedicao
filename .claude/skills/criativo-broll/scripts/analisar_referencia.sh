@@ -34,7 +34,6 @@ ffmpeg -hide_banner -loglevel error -y -i "$V" -ac 1 -ar 16000 audio.wav
 echo "== loudness por trecho"
 lufs(){ ffmpeg -hide_banner -nostats -ss "$1" -to "$2" -i "$V" -af ebur128=framelog=quiet -f null - 2>&1 | sed -n '/Summary/,$p' | grep ' I:' | tr -s ' '; }
 echo "0–21.5 s (antes da música):$(lufs 0 21.5)"
-echo "últimos 8 s (deve ser só música):$(lufs "$(python3 -c "print(max($DUR-8,0))")" "$DUR")"
 
 python3 - <<'EOF' 2>/dev/null || echo "(instale numpy/librosa para a análise fina de voz: pip install librosa)"
 import numpy as np, librosa
@@ -46,7 +45,11 @@ base=np.median(voz[t>t[-1]-6])                       # nível da banda de voz na
 lento=np.convolve(voz,np.ones(50)/50,'same')           # média de 0,5 s: ignora picos isolados da música
 ativo=np.where(lento>base+6)[0]
 ini=np.where(voz>base+8)[0]
-print(f"voz começa ~{t[ini[0]]:.2f}s | voz termina ~{t[ativo[-1]]:.2f}s | cauda só música ~{t[-1]-t[ativo[-1]]:.1f}s (confira no espectrograma)")
+fim=t[ativo[-1]]
+print(f"voz começa ~{t[ini[0]]:.2f}s | voz termina ~{fim:.2f}s | cauda só música ~{t[-1]-fim:.1f}s (confira no espectrograma)")
+import subprocess
+r=subprocess.run(["ffmpeg","-hide_banner","-nostats","-ss",f"{fim+0.3:.2f}","-i","audio.wav","-af","ebur128=framelog=quiet","-f","null","-"],capture_output=True,text=True).stderr
+print("cauda só música:", [l.strip() for l in r.split("Summary")[-1].splitlines() if "I:" in l][0])
 # salto de energia da camada musical entre 15 e 30 s
 seg=[(a, mus[(t>=a)&(t<a+0.1)].mean()) for a in np.arange(15,30,0.1)]
 salto=max(range(5,len(seg)), key=lambda i: seg[i][1]-np.mean([s[1] for s in seg[i-5:i]]))
@@ -54,3 +57,4 @@ print(f"provável entrada da música ~{seg[salto][0]:.1f}s")
 tempo,_=librosa.beat.beat_track(y=y[-sr*8:],sr=sr); print(f"BPM da música (cauda) ~{float(np.atleast_1d(tempo)[0]):.0f}")
 EOF
 echo "Pronto: $(pwd)  (veja folhas/*.png, espectro.png, cenas.tsv)"
+echo "Fala com tempo: python3 $(dirname "$0")/transcrever.py \"$V\" pt|es   (monte a tabela fala × tela)"

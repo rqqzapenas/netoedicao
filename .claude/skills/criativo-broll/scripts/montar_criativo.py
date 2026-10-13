@@ -1,36 +1,37 @@
 #!/usr/bin/env python3
-"""Monta um criativo b-roll no método (voz IA + b-roll cortado ≤2s + música a partir de 22s +
-cauda só de música com CTA) como projeto HyperFrames pronto para `npx hyperframes render`.
+"""Monta um criativo b-roll no método do Neto como projeto HyperFrames pronto para render.
 
 Uso:
-  python3 montar_criativo.py spec.json [--render] [--seed N]
+  python3 montar_criativo.py spec.json [--render] [--seed=N]
 
-Veja ../SKILL.md (seção "Spec do criativo") para o formato do spec.json.
-Depende só de python3 (stdlib), ffmpeg e ffprobe.
+Formato do spec.json: ver ../SKILL.md, seção "Spec". Regras e números: SKILL.md + references/.
+Depende de python3, ffmpeg/ffprobe; transcrição (CTA e sincronia automáticos) usa sherpa-onnx
+instalado por scripts/setup.sh na raiz do repo — sem ele, use "cta_tempo" e "tempo" nas âncoras.
 """
-import json, os, random, re, shutil, subprocess, sys
+import json, random, re, shutil, subprocess, sys
 from pathlib import Path
 
 SKILL = Path(__file__).resolve().parent.parent
 ASSETS = SKILL / "assets"
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+import transcrever as tr  # noqa: E402
 
 # ---------------------------------------------------------------- regras do método (fonte: SKILL.md)
 W, H, FPS = 1080, 1920, 30
-MAX_CENA = 2.0          # nenhuma cena passa de 2 s
-MIN_CENA = 0.2          # micro-corte (flash) mais curto permitido
-VOZ_INICIO = 0.2        # a voz entra praticamente no frame 1
-MUSICA_INICIO = 22.0    # música entra no segundo 22, corte seco
-CAUDA = 11.0            # intervalo final só música + texto + b-roll
-CTA_ANTECEDENCIA = 4.0  # CTA visual aparece ~4 s antes da voz acabar (quando a voz fala o CTA)
-LUFS_VOZ, LUFS_MUSICA = -16.0, -27.0   # música ~11 LU abaixo da voz, nível constante, sem ducking
+MAX_CENA = 2.0           # regra do dono: nenhuma cena passa de 2 s
+MIN_CENA = 0.2           # flash mais curto permitido
+VOZ_INICIO = 0.2         # a voz entra praticamente no primeiro frame (referências: 0,18–0,25 s)
+CAUDA = 9.0              # só música + CTA + b-roll depois da voz (referências: 6,4 s salsas, 11 s gelato)
+CTA_ANTES_DA_FALA = 0.4  # CTA visual entra ~0,3–0,6 s ANTES da voz falar "clique no botão"
+LUFS_VOZ = -16.0
+LUFS_MUSICA = -30.0      # 12–18 LU abaixo da voz nas referências, constante do começo ao fim
+FRASES_CTA = ["clique no botao", "clica no botao", "clique no botão", "dale clic", "haz clic", "da clic",
+              "botao aqui embaixo", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
+CTA_PADRAO = {"pt": ["Clique no", "botão abaixo"], "es": ["Haz clic en", "el botón de abajo"]}
 
-# Ritmo extraído do criativo de referência (gelato, 82,5 s, 54 cenas).
-# (duração, categorias preferidas em ordem). Categorias: final, processo, textura, reacao, geral.
-GANCHO = [  # 0 → ~5,5 s: só produto final / "money shot", cortes rápidos com um flash
-    (1.43, ["final", "textura"]), (1.13, ["final"]), (0.83, ["final", "textura"]),
-    (0.67, ["final", "textura"]), (0.27, ["final", "textura"]), (1.13, ["final"]),
-]
-CORPO = [  # ciclo do meio: processo calmo (1,6–2,0) intercalado com rajadas (0,6–0,9) e reação ~a cada 20 s
+# Ritmo medido nas referências (duração, categorias preferidas). Gancho = só o objeto do hook falado.
+GANCHO = [1.43, 1.13, 0.83, 0.67, 0.27, 1.13]          # gelato; salsas: 1.43 1.90 0.27 0.37 0.63
+CORPO = [  # processo calmo 1,6–2,0 s intercalado com rajadas 0,6–0,9 s e reação a cada ~20 s
     (1.20, ["processo"]), (0.93, ["processo"]), (0.20, ["processo", "textura"]), (1.60, ["processo"]),
     (1.10, ["processo"]), (2.00, ["processo", "textura"]), (1.67, ["textura", "final"]),
     (1.43, ["textura", "final"]), (1.83, ["textura"]), (1.83, ["textura", "final"]),
@@ -44,9 +45,8 @@ CORPO = [  # ciclo do meio: processo calmo (1,6–2,0) intercalado com rajadas (
     (0.70, ["textura"]), (0.73, ["textura"]), (0.87, ["textura"]), (0.77, ["textura"]),
     (0.93, ["final"]), (1.80, ["final", "textura"]), (1.63, ["textura"]), (1.27, ["textura", "final"]),
 ]
-CAUDA_RITMO = [(2.0, ["textura", "final"]), (1.63, ["final"]), (2.0, ["textura"]), (1.77, ["final"]),
-               (2.0, ["final", "textura"])]
-CATEGORIAS = ["final", "processo", "textura", "reacao"]
+CAUDA_RITMO = [(2.0, ["final", "textura"]), (1.63, ["final"]), (2.0, ["textura"]), (1.77, ["final"])]
+CATEGORIAS = ["gancho", "final", "processo", "textura", "reacao"]
 
 
 def sh(cmd, **kw):
@@ -54,8 +54,7 @@ def sh(cmd, **kw):
 
 
 def duracao(path):
-    out = sh(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)])
-    return float(out.stdout.strip())
+    return float(sh(["ffprobe", "-v", "error", "-show_entries", "format=duration", "-of", "csv=p=0", str(path)]).stdout)
 
 
 def tem_video(path):
@@ -66,95 +65,140 @@ def tem_video(path):
 
 def categoria(nome):
     base = Path(nome).stem.lower()
-    for c in CATEGORIAS:
-        if base.startswith(c):
-            return c
-    return "geral"
+    return next((c for c in CATEGORIAS if base.startswith(c)), "geral")
+
+
+def seguro(nome):
+    return re.sub(r"[^\w.\-]", "_", Path(nome).name)
 
 
 # ---------------------------------------------------------------- áudio
-def preparar_voz(src, dst, apertar_pausas=True):
-    """Tira o silêncio do começo, encurta pausas longas para ~0,2 s e normaliza em LUFS_VOZ."""
-    filtros = ["silenceremove=start_periods=1:start_threshold=-45dB:start_silence=0.02"]
+def preparar_voz(src, dst, apertar_pausas=False):
+    """Voz entregue pelo usuário (MiniMax/ElevenLabs). Só tira o silêncio do começo e normaliza.
+    NUNCA corta o fim. `apertar_pausas` encurta pausas > 0,45 s para 0,3 s (use só se a voz vier arrastada)."""
+    filtros = ["silenceremove=start_periods=1:start_threshold=-50dB:start_silence=0.03"]
     if apertar_pausas:
-        filtros.append("silenceremove=stop_periods=-1:stop_duration=0.3:stop_threshold=-45dB:stop_silence=0.2")
-    filtros.append(f"loudnorm=I={LUFS_VOZ}:TP=-1.5:LRA=11")
+        filtros.append("silenceremove=stop_periods=-1:stop_duration=0.45:stop_threshold=-50dB:stop_silence=0.3")
+    filtros += [f"loudnorm=I={LUFS_VOZ}:TP=-1.5:LRA=11", "apad=pad_dur=0.25"]   # 0,25 s de respiro no final
     sh(["ffmpeg", "-y", "-i", str(src), "-af", ",".join(filtros), "-ar", "48000", "-ac", "2", str(dst)])
+    bruto, final = duracao(src), duracao(dst)
+    if final < bruto * 0.85:
+        print(f"ATENÇÃO: a voz encolheu de {bruto:.1f}s para {final:.1f}s — confira se nenhuma palavra foi comida.")
 
 
 def preparar_musica(src, dst, offset, dur):
-    """Trecho da música a partir de `offset`, com loop se for curta, nível constante em LUFS_MUSICA.
-    Entrada e saída secas (só 15 ms anti-clique)."""
+    """Trecho da música a partir de `offset` (s dentro do arquivo), com loop se faltar, nível constante.
+    Entra e sai seca (15 ms anti-clique)."""
     sh(["ffmpeg", "-y", "-stream_loop", "-1", "-ss", f"{offset}", "-i", str(src), "-t", f"{dur:.3f}",
-        "-af", f"loudnorm=I={LUFS_MUSICA}:TP=-2:LRA=11,afade=t=in:d=0.015,afade=t=out:st={max(dur-0.015,0):.3f}:d=0.015",
+        "-af", f"loudnorm=I={LUFS_MUSICA}:TP=-2:LRA=11,afade=t=in:d=0.015,"
+               f"afade=t=out:st={max(dur - 0.015, 0):.3f}:d=0.015",
         "-ar", "48000", "-ac", "2", str(dst)])
 
 
-# ---------------------------------------------------------------- plano de cortes
-def ritmo(total, cta_ini):
-    """Lista de (inicio, dur, categorias) cobrindo 0→total, sem cena > MAX_CENA."""
-    cenas, t = [], 0.0
-    fila_gancho, i_corpo, i_cauda = list(GANCHO), 0, 0
-    while t < total - 1e-6:
-        if fila_gancho:
-            d, cats = fila_gancho.pop(0)
-        elif t >= cta_ini:
-            d, cats = CAUDA_RITMO[i_cauda % len(CAUDA_RITMO)]; i_cauda += 1
-        else:
-            d, cats = CORPO[i_corpo % len(CORPO)]; i_corpo += 1   # o CTA entra no meio de uma cena, não num corte
-        d = min(d, MAX_CENA, total - t)
-        if total - (t + d) < MIN_CENA:                  # não deixa sobrar um farelo no final
-            d = total - t
-            if d > MAX_CENA:                             # divide em duas
-                d = d / 2
-        cenas.append((round(t, 3), round(d, 3), cats))
-        t += d
-    return cenas
-
-
+# ---------------------------------------------------------------- b-roll
 class Pool:
     def __init__(self, arquivos, rng):
         self.rng = rng
-        self.clips = []
+        self.clips = {}
         for f in arquivos:
             D = duracao(f)
-            if D < MIN_CENA + 0.1:
-                continue
-            self.clips.append({"src": f, "dur": D, "cat": categoria(f.name), "usos": []})
+            if D >= MIN_CENA + 0.1:
+                self.clips[f.name] = {"src": f, "dur": D, "cat": categoria(f.name), "usos": []}
         if not self.clips:
             sys.exit("Nenhum b-roll utilizável encontrado.")
 
-    def escolher(self, cats, dur, anterior):
-        def score(c):
-            cat_rank = cats.index(c["cat"]) if c["cat"] in cats else (len(cats) + (0 if c["cat"] == "geral" else 1))
-            cabe = 0 if c["dur"] >= dur + 0.05 else 1
-            return (cabe, c["src"] == anterior, cat_rank, len(c["usos"]), self.rng.random())
-        c = min(self.clips, key=score)
+    def trecho(self, c, dur):
+        """Trecho de `dur` s do clipe, o mais longe possível dos trechos já usados (partes diferentes)."""
         d = min(dur, c["dur"] - 0.05)
-        # escolhe o trecho mais distante dos trechos já usados desse b-roll ("partes diferentes do mesmo b-roll")
         max_ini = max(c["dur"] - d - 0.05, 0)
-        candidatos = [round(x * 0.1, 2) for x in range(int(max_ini * 10) + 1)] or [0.0]
+        cands = [round(x * 0.1, 2) for x in range(int(max_ini * 10) + 1)] or [0.0]
         if c["usos"]:
-            ini = max(candidatos, key=lambda s: (min(abs(s - u) for u in c["usos"]), -s))
+            ini = max(cands, key=lambda s: (min(abs(s - u) for u in c["usos"]), -s))
         else:
-            ini = candidatos[0] if c["cat"] in ("final", "textura") and len(candidatos) < 30 else \
-                self.rng.choice(candidatos[: max(1, len(candidatos) // 2)])
+            ini = cands[0] if c["cat"] in ("gancho", "final") else self.rng.choice(cands[: max(1, len(cands) // 2)])
         c["usos"].append(ini)
-        return c, ini, d
+        return ini, d
+
+    def escolher(self, cats, dur, anterior, evitar=()):
+        def score(c):
+            rank = cats.index(c["cat"]) if c["cat"] in cats else (len(cats) + (0 if c["cat"] == "geral" else 1))
+            return (c["dur"] < dur + 0.05, c["src"] == anterior, c["src"].name in evitar, rank,
+                    len(c["usos"]), self.rng.random())
+        c = min(self.clips.values(), key=score)
+        return (c,) + self.trecho(c, dur)
+
+
+def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
+    """Lista de cenas cobrindo 0→total. `ancoras` = [(tempo, nome_arquivo)] ordenadas."""
+    cenas, t, anterior = [], 0.0, None
+    pend = list(ancoras)
+    # 1) GANCHO: só o(s) clipe(s) que mostram exatamente o que a primeira frase fala
+    if gancho_clips:
+        for i, d in enumerate(GANCHO):
+            c = pool.clips[gancho_clips[i % len(gancho_clips)]]
+            ini, dd = pool.trecho(c, d)
+            cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": "gancho"})
+            t += dd; anterior = c["src"]
+    # 2) CORPO + CAUDA, respeitando as âncoras de sincronia
+    i_corpo = i_cauda = 0
+    while t < total - 1e-6:
+        if t >= cta_ini:
+            d, cats = CAUDA_RITMO[i_cauda % len(CAUDA_RITMO)]; i_cauda += 1
+        else:
+            d, cats = CORPO[i_corpo % len(CORPO)]; i_corpo += 1
+        forcado = None
+        while pend and pend[0][0] < t - 0.3:           # âncora que ficou para trás (ex.: dentro do gancho)
+            pend.pop(0)
+        if pend and pend[0][0] < t + d:
+            ta, nome = pend[0]
+            if ta - t >= 0.45:                           # termina esta cena logo antes da palavra
+                d = ta - 0.1 - t
+            else:                                        # esta cena É a da palavra
+                forcado = nome; pend.pop(0); d = max(d, 1.2)
+        d = min(d, MAX_CENA, total - t)
+        if total - (t + d) < MIN_CENA:
+            d = total - t
+            if d > MAX_CENA:
+                d /= 2
+        if forcado:
+            c = pool.clips[forcado]; ini, dd = pool.trecho(c, d); motivo = "sincronia"
+        else:
+            evitar = {a[1] for a in pend}               # reserva os clipes das âncoras para a hora da palavra
+            c, ini, dd = pool.escolher(cats, d, anterior, evitar); motivo = cats[0]
+        cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": motivo})
+        t += dd; anterior = c["src"]
+    return cenas
 
 
 # ---------------------------------------------------------------- HTML
-def html(cenas, total, cta_ini, cta_linhas, musica_ok):
+def html(cenas, total, cta_ini, cta_linhas, entrada, musica, flashes):
     vids = []
     for i, c in enumerate(cenas):
         vids.append(
-            f'      <video id="cena{i+1:02d}" class="clip broll" src="{c["src"]}" muted playsinline '
+            f'      <video id="cena{i+1:02d}" class="clip broll" src="assets/broll/{c["clip"]["src"].name}" muted playsinline '
             f'data-start="{c["inicio"]:.3f}" data-duration="{c["dur"]:.3f}" data-media-start="{c["in"]:.2f}" '
             f'data-track-index="{i % 2}"></video>')
+    for j, ft in enumerate(flashes):
+        vids.append(f'      <div id="flash{j+1}" class="clip flash" data-start="{ft:.3f}" data-duration="0.24" '
+                    f'data-track-index="4"></div>')
     linhas = "\n".join(f'          <span class="linha"><span class="txt">{l}</span></span>' for l in cta_linhas)
-    musica = (f'    <audio id="musica" src="assets/musica.wav" data-start="{MUSICA_INICIO:.3f}" '
-              f'data-duration="{total - MUSICA_INICIO:.3f}" data-track-index="11" data-volume="1"></audio>'
-              if musica_ok else "")
+    mus = ""
+    if musica:
+        mus = (f'    <audio id="musica" src="assets/musica.wav" data-start="{musica["inicio"]:.3f}" '
+               f'data-duration="{total - musica["inicio"]:.3f}" data-track-index="11" data-volume="1"></audio>')
+    if entrada == "digitar":   # salsas: texto "digitando" + ícone em fade, ~0,5 s
+        anim = (f'      document.querySelectorAll("#cta-texto .txt").forEach((el) => {{\n'
+                f'        const txt = el.textContent; el.textContent = "";\n'
+                f'        [...txt].forEach((ch) => {{ const s = document.createElement("span"); s.textContent = ch; s.className = "ch"; el.appendChild(s); }});\n'
+                f'      }});\n'
+                f'      tl.fromTo("#cta-icone", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, {cta_ini:.3f});\n'
+                f'      tl.fromTo(".linha", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.01, stagger: 0.12 }}, {cta_ini:.3f});\n'
+                f'      tl.fromTo(".ch", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.01, stagger: 0.02 }}, {cta_ini:.3f});')
+    else:                      # gelato: grupo texto+ícone cresce do centro em 10 frames
+        anim = f'      tl.fromTo("#cta-grupo", {{ scale: 0 }}, {{ scale: 1, duration: 0.33, ease: "power2.out" }}, {cta_ini:.3f});'
+    flash_anim = "\n".join(
+        f'      tl.fromTo("#flash{j+1}", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.07 }}, {ft:.3f})'
+        f'.to("#flash{j+1}", {{ opacity: 0, duration: 0.14 }}, {ft + 0.1:.3f});' for j, ft in enumerate(flashes))
     return f"""<!doctype html>
 <html lang="pt-BR" data-resolution="portrait">
   <head>
@@ -168,16 +212,17 @@ def html(cenas, total, cta_ini, cta_linhas, musica_ok):
       html, body {{ width: {W}px; height: {H}px; overflow: hidden; background: #000; }}
       #root {{ position: relative; width: 100%; height: 100%; overflow: hidden; }}
       .broll {{ position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }}
-      /* CTA: texto branco com contorno preto sobre faixa verde de bordas "pinceladas" + sticker do WhatsApp */
+      .flash {{ position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 8; }}
+      /* CTA: branco com contorno preto sobre faixa verde de bordas "pinceladas" + sticker do WhatsApp */
       #cta {{ position: absolute; inset: 0; z-index: 10; }}
-      #cta-grupo {{ position: absolute; left: 0; top: 0; width: 100%; height: 100%; transform-origin: 50% 47%; }}
-      #cta-texto {{ position: absolute; top: 578px; left: 0; width: 100%; display: flex; flex-direction: column;
-                    align-items: center; gap: 6px; font-family: "Montserrat", sans-serif; font-weight: 600;
-                    font-size: 122px; line-height: 1.12; letter-spacing: -0.5px; }}
-      .linha {{ position: relative; display: inline-block; padding: 0 22px; }}
-      .linha::before {{ content: ""; position: absolute; inset: 10px 0 4px 0; background: #009407; filter: url(#pincel); }}
+      #cta-grupo {{ position: absolute; inset: 0; transform-origin: 50% 50%; }}
+      #cta-texto {{ position: absolute; top: 640px; left: 0; width: 100%; display: flex; flex-direction: column;
+                    align-items: center; gap: 4px; font-family: "Montserrat", sans-serif; font-weight: 600;
+                    font-size: 108px; line-height: 1.12; letter-spacing: -0.5px; }}
+      .linha {{ position: relative; display: inline-block; padding: 0 20px; white-space: nowrap; }}
+      .linha::before {{ content: ""; position: absolute; inset: 10px 0 4px 0; background: #009b01; filter: url(#pincel); }}
       .txt {{ position: relative; color: #fff; -webkit-text-stroke: 9px #000; paint-order: stroke fill; }}
-      #cta-icone {{ position: absolute; left: 50%; top: 1050px; width: 380px; height: 380px; margin-left: -190px; }}
+      #cta-icone {{ position: absolute; left: 340px; top: 1040px; width: 400px; height: 400px; }}
     </style>
   </head>
   <body>
@@ -199,11 +244,11 @@ def html(cenas, total, cta_ini, cta_linhas, musica_ok):
       </div>
     </div>
     <audio id="voz" src="assets/voz.wav" data-start="{VOZ_INICIO:.3f}" data-track-index="10" data-volume="1"></audio>
-{musica}
+{mus}
     <script>
       const tl = gsap.timeline({{ paused: true }});
-      // CTA "pop": cresce do centro do grupo de 0 → 100% em ~0,33 s (10 frames), sem overshoot
-      tl.fromTo("#cta-grupo", {{ scale: 0 }}, {{ scale: 1, duration: 0.33, ease: "power2.out" }}, {cta_ini:.3f});
+{anim}
+{flash_anim}
       window.__timelines["main"] = tl;
     </script>
   </body>
@@ -220,18 +265,11 @@ def main():
     base = spec_path.parent
     seed = int(next((a.split("=")[1] for a in sys.argv if a.startswith("--seed=")), spec.get("seed", 1)))
     rng = random.Random(seed)
-
-    # voz/música padrão do produto (produtos.json na raiz do repo ou na skill)
-    produtos = {}
-    for p in [base / "produtos.json", Path.cwd() / "produtos.json", SKILL / "produtos.json"]:
-        if p.exists():
-            produtos = json.loads(p.read_text()); break
-    padrao = produtos.get(spec.get("produto", ""), {})
-    voz_src = spec.get("voz") or padrao.get("voz")
-    mus_src = spec.get("musica") or padrao.get("musica")
-    mus_off = float(spec.get("musica_offset", padrao.get("musica_offset", 0)))
-    if not voz_src:
-        sys.exit("Spec sem 'voz' (e produto sem voz padrão em produtos.json).")
+    idioma = spec.get("idioma", "pt")
+    if not spec.get("voz"):
+        sys.exit("Spec sem 'voz'. A voz é sempre enviada pelo usuário (MiniMax/ElevenLabs) — peça o arquivo.")
+    if not spec.get("musica"):
+        print("ATENÇÃO: spec sem 'musica'. O método sempre tem música — peça o arquivo ao usuário.")
 
     out = (base / spec.get("saida", spec.get("nome", "criativo"))).resolve()
     (out / "assets" / "broll").mkdir(parents=True, exist_ok=True)
@@ -241,74 +279,108 @@ def main():
     for f in (ASSETS / "fonts").glob("*.woff2"):
         shutil.copy(f, out / "assets" / "fonts" / f.name)
 
-    # ---- áudio
-    preparar_voz((base / voz_src).resolve(), out / "assets" / "voz.wav", spec.get("apertar_pausas", True))
-    voz_dur = duracao(out / "assets" / "voz.wav")
-    voz_fim = VOZ_INICIO + voz_dur
-    cauda = float(spec.get("cauda", CAUDA))
-    total = round(voz_fim + cauda, 3)
-    cta_ini = round(max(voz_fim - float(spec.get("cta_antecedencia", CTA_ANTECEDENCIA)), 6.0), 3)
-    musica_ok = bool(mus_src) and total > MUSICA_INICIO
-    if musica_ok:
-        preparar_musica((base / mus_src).resolve(), out / "assets" / "musica.wav", mus_off, total - MUSICA_INICIO)
+    # ---- voz + transcrição
+    voz = out / "assets" / "voz.wav"
+    preparar_voz((base / spec["voz"]).resolve(), voz, spec.get("apertar_pausas", False))
+    voz_fim = VOZ_INICIO + duracao(voz) - 0.25          # o apad não conta como fala
+    linhas = []
+    if tr.disponivel():
+        linhas = [(a + VOZ_INICIO, b + VOZ_INICIO, t) for a, b, t in tr.transcrever(voz, idioma)]
+        (out / "transcricao.tsv").write_text("".join(f"{a:.2f}\t{b:.2f}\t{t}\n" for a, b, t in linhas))
+        if linhas:
+            voz_fim = linhas[-1][1]
+    else:
+        print("AVISO: transcritor não instalado (rode scripts/setup.sh). CTA e sincronia só com tempos manuais.")
+
+    # ---- CTA: ancorado na frase falada "clique no botão…"
+    cta_ini = spec.get("cta_tempo")
+    if cta_ini is None and linhas:
+        achados = [x for x in (tr.tempo_da_frase(linhas, f, voz_fim - 25) for f in FRASES_CTA) if x is not None]
+        if achados:
+            cta_ini = min(achados) - CTA_ANTES_DA_FALA
+    if cta_ini is None:
+        cta_ini = voz_fim - 5.0
+        print("AVISO: não achei a frase do CTA na voz; CTA posto 5 s antes do fim da voz. Confira.")
+    cta_ini = round(max(cta_ini, 6.0), 3)
+    total = round(voz_fim + float(spec.get("cauda", CAUDA)), 3)
+
+    # ---- música: do início da timeline, a partir do ponto escolhido da faixa
+    musica = None
+    if spec.get("musica"):
+        musica = {"inicio": float(spec.get("musica_inicio", 0.0))}
+        preparar_musica((base / spec["musica"]).resolve(), out / "assets" / "musica.wav",
+                        float(spec.get("musica_offset", 22.0)), total - musica["inicio"])
 
     # ---- b-roll
     arquivos = []
     for d in spec.get("broll_dirs", [spec.get("broll_dir", "broll")]):
         p = (base / d).resolve()
-        arquivos += sorted(f for f in p.iterdir() if f.suffix.lower() in (".mp4", ".mov", ".webm", ".m4v")
-                           and tem_video(f))
-    copiados = {}
+        arquivos += sorted(f for f in p.iterdir() if f.suffix.lower() in (".mp4", ".mov", ".webm", ".m4v") and tem_video(f))
+    copias = []
     for f in arquivos:
-        dst = out / "assets" / "broll" / re.sub(r"[^\w.\-]", "_", f.name)
+        dst = out / "assets" / "broll" / seguro(f.name)
         if not dst.exists():
             shutil.copy(f, dst)
-        copiados[f] = dst
-    pool = Pool(list(copiados.values()), rng)
+        copias.append(dst)
+    pool = Pool(copias, rng)
 
-    if spec.get("clips"):   # EDL manual tem prioridade
+    gancho = [seguro(g) for g in spec.get("gancho", [])] or [n for n, c in pool.clips.items() if c["cat"] == "gancho"]
+    if not gancho:
+        print("ATENÇÃO: nenhum clipe de gancho (spec 'gancho' ou arquivo 'gancho_*'). O hook visual TEM que mostrar "
+              "o que a primeira frase fala — usando 'final_*' como substituto.")
+        gancho = [n for n, c in pool.clips.items() if c["cat"] == "final"][:2]
+
+    ancoras = []
+    for a in spec.get("sincronia", []):
+        nome = seguro(a["broll"])
+        if nome not in pool.clips:
+            sys.exit(f"Âncora aponta para b-roll inexistente: {a['broll']}")
+        ta = a.get("tempo")
+        if ta is None and linhas:
+            ta = tr.tempo_da_frase(linhas, a["fala"])
+        if ta is None:
+            print(f"AVISO: não achei \"{a.get('fala')}\" na fala; âncora ignorada."); continue
+        ancoras.append((float(ta), nome))
+    ancoras.sort()
+
+    if spec.get("clips"):   # EDL manual tem prioridade total
         cenas, t = [], 0.0
         for c in spec["clips"]:
+            clip = pool.clips[seguro(c["src"])]
             d = min(float(c["dur"]), MAX_CENA)
-            cenas.append({"inicio": round(t, 3), "dur": d, "src": f"assets/broll/{Path(c['src']).name}",
-                          "in": float(c.get("in", 0)), "cat": categoria(c["src"])})
+            cenas.append({"inicio": t, "dur": d, "clip": clip, "in": float(c.get("in", 0)), "motivo": "manual"})
             t += d
         total = round(t, 3)
     else:
-        cenas, anterior = [], None
-        for ini, d, cats in ritmo(total, cta_ini):
-            c, cin, dd = pool.escolher(cats, d, anterior)
-            cenas.append({"inicio": ini, "dur": round(dd, 3), "src": f"assets/broll/{c['src'].name}",
-                          "in": cin, "cat": c["cat"], "pedido": cats[0]})
-            anterior = c["src"]
-        # se algum b-roll era curto demais, recompacta os inícios
-        t = 0.0
-        for c in cenas:
-            c["inicio"] = round(t, 3); t += c["dur"]
-        total = round(t, 3)
+        cenas = planejar(total, cta_ini, pool, ancoras, gancho, rng)
+    t = 0.0
+    for c in cenas:   # recompacta (algum b-roll pode ter sido mais curto que o pedido)
+        c["inicio"] = round(t, 3); c["dur"] = round(c["dur"], 3); t += c["dur"]
+    total = round(t, 3)
 
-    linhas = spec.get("cta_linhas", ["Clique no", "botão abaixo"])
-    (out / "index.html").write_text(html(cenas, total, cta_ini, linhas, musica_ok))
+    flashes = [x for x in (tr.tempo_da_frase(linhas, f) for f in spec.get("flash_em", [])) if x is not None]
+    (out / "index.html").write_text(html(cenas, total, cta_ini, spec.get("cta_linhas", CTA_PADRAO.get(idioma, CTA_PADRAO["pt"])),
+                                         spec.get("cta_entrada", "pop"), musica, flashes))
     (out / "hyperframes.json").write_text(json.dumps({"skill": "general-video"}, indent=2))
+    edl = [{"inicio": c["inicio"], "dur": c["dur"], "src": c["clip"]["src"].name, "in": c["in"], "motivo": c["motivo"]}
+           for c in cenas]
     (out / "edl.json").write_text(json.dumps({"total": total, "voz_fim": voz_fim, "cta_inicio": cta_ini,
-                                              "musica_inicio": MUSICA_INICIO if musica_ok else None,
-                                              "cenas": cenas}, indent=2, ensure_ascii=False))
+                                              "ancoras": ancoras, "cenas": edl}, indent=2, ensure_ascii=False))
 
-    # ---- relatório de conformidade com o método
+    # ---- relatório de conformidade
     durs = [c["dur"] for c in cenas]
-    seguidos = sum(1 for a, b in zip(cenas, cenas[1:]) if a["src"] == b["src"])
-    reuso = {}
+    seguidos = sum(1 for a, b in zip(cenas, cenas[1:]) if a["clip"]["src"] == b["clip"]["src"] and a["motivo"] != "gancho")
+    usos = {}
     for c in cenas:
-        reuso[c["src"]] = reuso.get(c["src"], 0) + 1
+        usos[c["clip"]["src"].name] = usos.get(c["clip"]["src"].name, 0) + 1
     print(f"Projeto: {out}")
-    print(f"Duração total {total:.2f}s | voz 0,20→{voz_fim:.2f}s | música {MUSICA_INICIO if musica_ok else '—'}→fim | "
-          f"cauda só música {total - voz_fim:.2f}s | CTA a partir de {cta_ini:.2f}s")
-    print(f"{len(cenas)} cenas | média {sum(durs)/len(durs):.2f}s | máx {max(durs):.2f}s | mín {min(durs):.2f}s | "
-          f"mesmo b-roll em sequência: {seguidos} | b-rolls reaproveitados: {sum(1 for v in reuso.values() if v > 1)}/{len(reuso)}")
-    if max(durs) > MAX_CENA + 1e-6:
-        print("ATENÇÃO: cena acima de 2 s")
-    if not musica_ok:
-        print("ATENÇÃO: sem música (spec/produto sem 'musica' ou criativo com menos de 22 s)")
+    print(f"Total {total:.2f}s | voz {VOZ_INICIO:.2f}→{voz_fim:.2f}s | cauda só música {total - voz_fim:.2f}s | "
+          f"CTA visual {cta_ini:.2f}s | música {'desde ' + str(musica['inicio']) + 's (offset ' + str(spec.get('musica_offset', 22.0)) + 's)' if musica else '—'}")
+    print(f"{len(cenas)} cenas | média {sum(durs)/len(durs):.2f}s | máx {max(durs):.2f}s | mesmo b-roll em sequência "
+          f"(fora do gancho): {seguidos} | b-rolls reaproveitados {sum(v > 1 for v in usos.values())}/{len(usos)} | "
+          f"âncoras de sincronia {sum(c['motivo'] == 'sincronia' for c in cenas)}/{len(ancoras)}")
+    if linhas:
+        print("Gancho falado:", linhas[0][2][:110])
 
     if "--render" in sys.argv:
         subprocess.run(["npx", "-y", "hyperframes@latest", "lint"], cwd=out)
