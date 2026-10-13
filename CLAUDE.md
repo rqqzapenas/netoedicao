@@ -29,3 +29,5 @@ método e é alimentada a cada referência nova (`references/`). Resumo:
 - O dono SEMPRE manda a voz (MiniMax/ElevenLabs) e a música de cada criativo — mesma voz e mesma música para
   todos os criativos de um produto. Nunca gerar nem trocar por conta própria.
 - Versões oficiais: conferir o MP4 antes de entregar (ícone do CTA reto, voz inteira até a última palavra).
+- Nunca repetir o mesmo trecho de b-roll; faltou material → pedir/buscar mais b-roll (banco ≥ 1,3× a duração).
+- Fonte do CTA = "Sistema" do CapCut (equivalente usado: Montserrat SemiBold).

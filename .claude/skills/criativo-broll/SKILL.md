@@ -90,6 +90,14 @@ importante, avise o usuário antes de renderizar.
 - Flashes de 0,13–0,33 s de vez em quando (outro trecho ou ângulo de algo já visto).
 - Rajadas de 3–7 cortes rápidos a cada ~20–25 s e na reversão de risco; entre elas, cenas de 1,5–2,0 s.
 - Nunca o mesmo b-roll em duas cenas seguidas, exceto dentro do gancho.
+- **Nunca repetir o mesmo trecho de um b-roll** (feedback do dono no teste de salsas: "tá repetindo os mesmos
+  b-rolls nas mesmas partes do começo ao fim").
+  - Um arquivo só volta num trecho que ainda não apareceu, sem sobreposição, e a ≥ 15 s do uso anterior.
+  - Se o banco não dá conta, a solução é **mais b-roll**, nunca repetir. O banco precisa ter **≥ 1,3× a
+    duração do vídeo** em material (85 s de vídeo → ≥ 110 s; ideal 15–25 clipes de 5–20 s, com várias
+    variações do produto).
+  - O montador faz isso sozinho e avisa "b-roll insuficiente" com os trechos repetidos. Nesse caso, peça ou
+    busque mais b-roll antes de renderizar a versão oficial.
 
 ### B-roll
 | Categoria | Prefixo do arquivo | Onde entra |
@@ -128,8 +136,12 @@ importante, avise o usuário antes de renderizar.
 - **Quando entra**: 0,4–0,6 s **antes** da voz falar a frase do CTA ("Clique no botão" / "dale clic al
   botón"). O script acha a frase na transcrição. Fica até o fim (13–15 s na tela).
 - **Texto**: pt "Clique no / botão abaixo"; es "Haz clic en / el botón de abajo".
-  - Montserrat SemiBold ~108 px, branco com contorno preto grosso, cada linha sobre faixa verde `#009b01`
-    com bordas de pincel.
+  - **Fonte: a "Sistema" do CapCut** (pedido do dono, a do texto padrão "Texto padrão" do CapCut).
+    - Comparada lado a lado, a mais parecida é a **Montserrat SemiBold** (mesmo "a" de dois andares, "o"
+      redondo, "t" com corte inclinado), por isso é ela que o montador usa (`assets/fonts`).
+    - Poppins NÃO serve (o "a" é diferente).
+    - Se o dono mandar o arquivo da fonte do CapCut, troque o `@font-face`.
+  - ~108 px, branco com contorno preto grosso, cada linha sobre faixa verde `#009b01` com bordas de pincel.
   - Bloco em y ≈ 580–915 (as duas referências variam nessa faixa).
 - **Ícone**: balão verde sólido do WhatsApp com contorno branco de sticker, telefone branco e badge
   vermelho "1" com borda branca. ~380 px, centro em (540, ~1240). Arquivo `assets/whatsapp_badge.svg`.
@@ -201,17 +213,30 @@ importante, avise o usuário antes de renderizar.
 10. **Entregue** com `SendUserFile` (comprima com `-crf 23` se passar de 30 MB) + resumo de 3–5 linhas.
 
 ## Analisando novas referências
-- `scripts/analisar_referencia.sh video.mp4 pasta/`: cortes, folhas de contato, espectrograma, níveis,
-  BPM, fim da voz.
-- `python3 scripts/transcrever.py video.mp4 pt|es`: fala com tempo, para montar a tabela fala × tela.
-- Separar voz e música para medir níveis:
+- Um vídeo: `scripts/analisar_referencia.sh video.mp4 pasta/` (cortes, folhas de contato, espectrograma,
+  níveis, BPM, fim da voz) + `python3 scripts/transcrever.py video.mp4 pt|es` (fala com tempo, para a
+  tabela fala × tela).
+- **Lote**: `python3 scripts/analisar_lote.py lista.tsv saida/` (ou uma pasta de mp4).
+  - Mede por vídeo: cortes e % acima de 2 s, gancho falado + folha dos 6 primeiros s, CTA visual × frase
+    do CTA, cauda, voz × música (LU) e se a batida toca desde o início.
+  - Fecha com a mediana do lote. Rode com `bash scripts/setup.sh --tudo` antes (spleeter para os níveis).
+  - Os 30 criativos do Drive (15 salsas MX + 15 gelato BR) estão listados em
+    `references/drive_criativos.tsv`. Baixar exige o domínio `drive.usercontent.google.com` liberado na
+    rede do ambiente (os arquivos são públicos). O conector do Drive só baixa até 10 MB.
+- Separar voz e música à mão:
   `MODEL_PATH=/opt/ml/pretrained_models /opt/ml/sp/bin/spleeter separate -p spleeter:2stems -o saida/ video.wav`.
 - Padrão novo e consistente em 2+ criativos → **adicione aqui e em `references/`** com o número medido e
   o porquê. Esta skill é a memória do método.
 
 ## Pendências
-- Pastas do Google Drive (criativos dos 2 produtos) e o projeto do CapCut `ad2_gelatos` ainda não foram
-  analisados. O conector do Drive não está nesta conta e o zip do CapCut não chegou. O `draft_info.json`
-  do CapCut vai confirmar cortes, volumes e o ponto de início da música exatos.
+- **Lote do Drive** (30 criativos): pronto para rodar assim que `drive.usercontent.google.com` estiver
+  liberado. Depois, consolide a mediana do lote nesta skill, principalmente % de cenas > 2 s, cauda e
+  antecedência do CTA. Até agora (2 referências): cauda 6,4–11 s, CTA 0,38–0,41 s antes da fala, música
+  14–17,5 LU abaixo da voz e batida presente desde o início.
+- **Projeto do CapCut** `ad2_gelatos`: precisa do controle do computador (Claude desktop com "Uso do
+  computador" ligado e o computador escolhido em Dispositivos) ou do zip da pasta.
+  - Ler `draft_info.json`: `tracks` → segmentos com `target_timerange`/`source_timerange` em µs,
+    `materials.videos/audios`, volumes, velocidade, fontes de texto.
+  - Confirma o ponto de início da música, os volumes exatos e a fonte "Sistema".
 - Confirmar com o dono o significado de "música iniciando no 00:00:22" (ver Música).
 - Busca de b-roll no TikTok: skill futura.

@@ -97,35 +97,56 @@ def preparar_musica(src, dst, offset, dur):
 
 # ---------------------------------------------------------------- b-roll
 class Pool:
+    """Banco de b-roll. Regra do dono: NUNCA repetir o mesmo trecho de um b-roll. Cada arquivo pode voltar,
+    mas sempre num trecho que ainda não apareceu (sem sobreposição) e a ≥ 15 s do último uso na timeline."""
+    MARGEM = 0.15        # folga entre trechos do mesmo arquivo
+    INTERVALO = 15.0     # distância mínima na timeline entre dois usos do mesmo arquivo
+
     def __init__(self, arquivos, rng):
         self.rng = rng
         self.clips = {}
+        self.repetidos = 0
         for f in arquivos:
             D = duracao(f)
             if D >= MIN_CENA + 0.1:
-                self.clips[f.name] = {"src": f, "dur": D, "cat": categoria(f.name), "usos": []}
+                self.clips[f.name] = {"src": f, "dur": D, "cat": categoria(f.name), "usados": [], "tempos": []}
         if not self.clips:
             sys.exit("Nenhum b-roll utilizável encontrado.")
 
-    def trecho(self, c, dur):
-        """Trecho de `dur` s do clipe, o mais longe possível dos trechos já usados (partes diferentes)."""
+    def livres(self, c, d):
+        """Inícios possíveis (passo 0,1 s) cujo trecho [s, s+d] não encosta em nenhum trecho já usado."""
+        max_ini = c["dur"] - d - 0.05
+        if max_ini < 0:
+            return []
+        cands = [round(x * 0.1, 2) for x in range(int(max_ini * 10) + 1)]
+        return [s for s in cands if all(s + d + self.MARGEM <= u0 or s >= u1 + self.MARGEM for u0, u1 in c["usados"])]
+
+    def trecho(self, c, dur, t, permitir_repetir=False):
         d = min(dur, c["dur"] - 0.05)
-        max_ini = max(c["dur"] - d - 0.05, 0)
-        cands = [round(x * 0.1, 2) for x in range(int(max_ini * 10) + 1)] or [0.0]
-        if c["usos"]:
-            ini = max(cands, key=lambda s: (min(abs(s - u) for u in c["usos"]), -s))
+        cands = self.livres(c, d)
+        if not cands:
+            if not permitir_repetir:
+                return None
+            self.repetidos += 1
+            cands = [round(x * 0.1, 2) for x in range(int(max(c["dur"] - d - 0.05, 0) * 10) + 1)] or [0.0]
+        if c["usados"]:   # o mais longe possível do que já apareceu
+            ini = max(cands, key=lambda s: min(abs(s - u0) for u0, _ in c["usados"]))
         else:
             ini = cands[0] if c["cat"] in ("gancho", "final") else self.rng.choice(cands[: max(1, len(cands) // 2)])
-        c["usos"].append(ini)
+        c["usados"].append((ini, ini + d)); c["tempos"].append(t)
         return ini, d
 
-    def escolher(self, cats, dur, anterior, evitar=()):
+    def escolher(self, cats, dur, anterior, t, evitar=()):
         def score(c):
             rank = cats.index(c["cat"]) if c["cat"] in cats else (len(cats) + (0 if c["cat"] == "geral" else 1))
-            return (c["dur"] < dur + 0.05, c["src"] == anterior, c["src"].name in evitar, rank,
-                    len(c["usos"]), self.rng.random())
+            recente = bool(c["tempos"]) and t - c["tempos"][-1] < self.INTERVALO
+            return (not self.livres(c, min(dur, c["dur"] - 0.05)), c["src"] == anterior, c["src"].name in evitar,
+                    recente, rank, len(c["usados"]), self.rng.random())
         c = min(self.clips.values(), key=score)
-        return (c,) + self.trecho(c, dur)
+        r = self.trecho(c, dur, t)
+        if r is None:     # banco esgotado: repete trecho, mas avisa no relatório
+            r = self.trecho(c, dur, t, permitir_repetir=True)
+        return (c,) + r
 
 
 def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
@@ -136,7 +157,7 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
     if gancho_clips:
         for i, d in enumerate(GANCHO):
             c = pool.clips[gancho_clips[i % len(gancho_clips)]]
-            ini, dd = pool.trecho(c, d)
+            ini, dd = pool.trecho(c, d, t, permitir_repetir=True)
             cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": "gancho"})
             t += dd; anterior = c["src"]
     # 2) CORPO + CAUDA, respeitando as âncoras de sincronia
@@ -165,10 +186,10 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
             if d > MAX_CENA:
                 d /= 2
         if forcado:
-            c = pool.clips[forcado]; ini, dd = pool.trecho(c, d); motivo = "sincronia"
+            c = pool.clips[forcado]; ini, dd = pool.trecho(c, d, t, permitir_repetir=True); motivo = "sincronia"
         else:
             evitar = {a[1] for a in pend if a[1]}               # reserva os clipes das âncoras para a hora da palavra
-            c, ini, dd = pool.escolher(cats, d, anterior, evitar); motivo = cats[0]
+            c, ini, dd = pool.escolher(cats, d, anterior, t, evitar); motivo = cats[0]
         cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": motivo})
         t += dd; anterior = c["src"]
     return cenas
@@ -385,6 +406,11 @@ def main():
     print(f"{len(cenas)} cenas | média {sum(durs)/len(durs):.2f}s | máx {max(durs):.2f}s | mesmo b-roll em sequência "
           f"(fora do gancho): {seguidos} | b-rolls reaproveitados {sum(v > 1 for v in usos.values())}/{len(usos)} | "
           f"âncoras de sincronia {sum(c['motivo'] == 'sincronia' for c in cenas)}/{sum(1 for a in ancoras if a[1])}")
+    banco = sum(c["dur"] for c in pool.clips.values())
+    print(f"Banco de b-roll: {banco:.0f}s de material para {total:.0f}s de vídeo | trechos repetidos: {pool.repetidos}")
+    if pool.repetidos or banco < 1.3 * total:
+        print(f"ATENÇÃO: b-roll insuficiente — o método não repete trecho. Peça/busque mais b-roll "
+              f"(mínimo ~{1.3 * total:.0f}s no total, ideal 15–25 clipes de 5–20 s com variações diferentes).")
     if linhas:
         print("Gancho falado:", linhas[0][2][:110])
 
