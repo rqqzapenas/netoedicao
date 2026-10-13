@@ -7,3 +7,4 @@ renders/
 *.mp3
 broll/
 analise_*/
+__pycache__/
