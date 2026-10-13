@@ -82,6 +82,7 @@ importante, avise o usuário antes de renderizar.
 - **Corte seco** é o padrão.
   - **Exceção rara** (só nas salsas): 1 flash branco de 0,2 s numa virada de bloco ("Y no solo eso") e
     1 transição zoom+fade. No máximo 1–2 por vídeo e só nas viradas de bloco (`flash_em` no spec).
+  - O flash entra 0,3 s antes da frase da virada e **o corte de cena fica escondido no pico do flash**.
 - **Gancho (0 → ~5 s)**: 5–6 cortes **do(s) clipe(s) do objeto do hook**, em trechos diferentes, acelerando
   até um flash.
   - Gelato: 1,43 · 1,13 · 0,83 · 0,67 · 0,27 · 1,13.
@@ -190,7 +191,9 @@ importante, avise o usuário antes de renderizar.
    `seed` se precisar.
 8. **Renderize** em segundo plano: `npx hyperframes render -o saida.mp4` na pasta do projeto (~4–5x a
    duração do vídeo).
-9. **Confira o MP4 antes de entregar** (obrigatório, o dono cobra qualidade nas versões oficiais):
+9. **Confira o MP4 antes de entregar** (obrigatório, o dono cobra qualidade nas versões oficiais).
+   Para conferir sem renderizar tudo de novo, use
+   `npx hyperframes snapshot --at 74.6,75,76 --no-end` na pasta do projeto (gera PNG dos instantes pedidos).
    - `scripts/analisar_referencia.sh saida.mp4`: cenas ≤ 2 s, voz inteira até o fim (sem corte no meio
      de palavra), cauda só música.
    - Folha de contato e quadro do CTA: ícone reto e inteiro, texto legível, nada fora da tela.

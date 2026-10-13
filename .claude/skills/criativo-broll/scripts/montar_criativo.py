@@ -151,7 +151,11 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
             pend.pop(0)
         if pend and pend[0][0] < t + d:
             ta, nome = pend[0]
-            if ta - t >= 0.45:                           # termina esta cena logo antes da palavra
+            if nome is None:                             # ponto de corte (pico do flash branco)
+                if ta - t >= 0.2:
+                    d = ta - t
+                pend.pop(0)
+            elif ta - t >= 0.45:                         # termina esta cena logo antes da palavra
                 d = ta - 0.1 - t
             else:                                        # esta cena É a da palavra
                 forcado = nome; pend.pop(0); d = max(d, 1.2)
@@ -163,7 +167,7 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
         if forcado:
             c = pool.clips[forcado]; ini, dd = pool.trecho(c, d); motivo = "sincronia"
         else:
-            evitar = {a[1] for a in pend}               # reserva os clipes das âncoras para a hora da palavra
+            evitar = {a[1] for a in pend if a[1]}               # reserva os clipes das âncoras para a hora da palavra
             c, ini, dd = pool.escolher(cats, d, anterior, evitar); motivo = cats[0]
         cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": motivo})
         t += dd; anterior = c["src"]
@@ -186,14 +190,15 @@ def html(cenas, total, cta_ini, cta_linhas, entrada, musica, flashes):
     if musica:
         mus = (f'    <audio id="musica" src="assets/musica.wav" data-start="{musica["inicio"]:.3f}" '
                f'data-duration="{total - musica["inicio"]:.3f}" data-track-index="11" data-volume="1"></audio>')
-    if entrada == "digitar":   # salsas: texto "digitando" + ícone em fade, ~0,5 s
-        anim = (f'      document.querySelectorAll("#cta-texto .txt").forEach((el) => {{\n'
-                f'        const txt = el.textContent; el.textContent = "";\n'
-                f'        [...txt].forEach((ch) => {{ const s = document.createElement("span"); s.textContent = ch; s.className = "ch"; el.appendChild(s); }});\n'
-                f'      }});\n'
-                f'      tl.fromTo("#cta-icone", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, {cta_ini:.3f});\n'
-                f'      tl.fromTo(".linha", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.01, stagger: 0.12 }}, {cta_ini:.3f});\n'
-                f'      tl.fromTo(".ch", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.01, stagger: 0.02 }}, {cta_ini:.3f});')
+    if entrada == "digitar":   # salsas: texto e faixa verde surgem juntos "digitando" + ícone em fade
+        passos, t0, partes = 0.018, cta_ini, []
+        for k, l in enumerate(cta_linhas):
+            n = max(len(l), 1)
+            partes.append(f'      tl.fromTo(".linha:nth-child({k+1})", {{ clipPath: "inset(-20px 100% -20px 0)" }}, '
+                          f'{{ clipPath: "inset(-20px 0% -20px 0)", duration: {n*passos:.2f}, ease: "steps({n})" }}, {t0:.3f});')
+            t0 += n * passos
+        partes.append(f'      tl.fromTo("#cta-icone", {{ opacity: 0 }}, {{ opacity: 1, duration: 0.3 }}, {cta_ini:.3f});')
+        anim = "\n".join(partes)
     else:                      # gelato: grupo texto+ícone cresce do centro em 10 frames
         anim = f'      tl.fromTo("#cta-grupo", {{ scale: 0 }}, {{ scale: 1, duration: 0.33, ease: "power2.out" }}, {cta_ini:.3f});'
     flash_anim = "\n".join(
@@ -341,7 +346,9 @@ def main():
         if ta is None:
             print(f"AVISO: não achei \"{a.get('fala')}\" na fala; âncora ignorada."); continue
         ancoras.append((float(ta), nome))
-    ancoras.sort()
+    flashes = [round(x - 0.3, 2) for x in (tr.tempo_da_frase(linhas, f) for f in spec.get("flash_em", [])) if x is not None]
+    ancoras += [(f + 0.07, None) for f in flashes]       # corte escondido no pico do flash
+    ancoras.sort(key=lambda a: a[0])
 
     if spec.get("clips"):   # EDL manual tem prioridade total
         cenas, t = [], 0.0
@@ -358,7 +365,6 @@ def main():
         c["inicio"] = round(t, 3); c["dur"] = round(c["dur"], 3); t += c["dur"]
     total = round(t, 3)
 
-    flashes = [x for x in (tr.tempo_da_frase(linhas, f) for f in spec.get("flash_em", [])) if x is not None]
     (out / "index.html").write_text(html(cenas, total, cta_ini, spec.get("cta_linhas", CTA_PADRAO.get(idioma, CTA_PADRAO["pt"])),
                                          spec.get("cta_entrada", "pop"), musica, flashes))
     (out / "hyperframes.json").write_text(json.dumps({"skill": "general-video"}, indent=2))
@@ -378,7 +384,7 @@ def main():
           f"CTA visual {cta_ini:.2f}s | música {'desde ' + str(musica['inicio']) + 's (offset ' + str(spec.get('musica_offset', 22.0)) + 's)' if musica else '—'}")
     print(f"{len(cenas)} cenas | média {sum(durs)/len(durs):.2f}s | máx {max(durs):.2f}s | mesmo b-roll em sequência "
           f"(fora do gancho): {seguidos} | b-rolls reaproveitados {sum(v > 1 for v in usos.values())}/{len(usos)} | "
-          f"âncoras de sincronia {sum(c['motivo'] == 'sincronia' for c in cenas)}/{len(ancoras)}")
+          f"âncoras de sincronia {sum(c['motivo'] == 'sincronia' for c in cenas)}/{sum(1 for a in ancoras if a[1])}")
     if linhas:
         print("Gancho falado:", linhas[0][2][:110])
 
