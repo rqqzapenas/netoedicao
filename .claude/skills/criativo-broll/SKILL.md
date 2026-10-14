@@ -236,6 +236,24 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
    - Ouça o fim: a última palavra da voz precisa estar completa.
 10. **Entregue** com `SendUserFile` (comprima com `-crf 23` se passar de 30 MB) + resumo de 3–5 linhas.
 
+
+### Recursos do spec usados no 1º criativo real (ad16 finger foods)
+- `gancho_ate`: frase da aterrissagem. O gancho é reescalado para terminar exatamente nela, e a aterrissagem
+  mostra o produto pronto. Pedido do dono no ad16: hook = receita no meio do preparo, aterrissagem = petiscos
+  prontos.
+- `gancho_ins`: entradas fixas do clipe do gancho, em ordem, para a receita avançar.
+- `"in"` em cada âncora de `sincronia`: escolhe o trecho exato que mostra a palavra.
+- `evitar`: `{"clipe.mp4": [[ini, fim], ...]}`, trechos proibidos (rosto falando, embalagem com marca,
+  trecho fraco).
+- Gancho e aterrissagem da mesma receita: corte um b-roll em dois (processo → `gancho_*`, produto pronto →
+  `final_*`) e tire o original do banco para não repetir trecho.
+- Música mais curta que o vídeo a partir do 0:22: monte a trilha antes (0:22→fim + 0:22→… com acrossfade
+  de 0,12 s no beat) e passe `musica_offset: 0`.
+- Antes de renderizar, gere uma grade com o quadro do meio de cada corte do `edl.json` e procure rosto,
+  texto ou embalagem.
+- Se o render falhar com "Chrome cannot start" (timeout), é transitório: rode de novo.
+- Entrega: o render `-q delivery` sai com ~170 MB. Para enviar no chat, faça 2 passadas a 2500k (~28 MB).
+
 ## Analisando novas referências
 - Um vídeo: `scripts/analisar_referencia.sh video.mp4 pasta/` (cortes, folhas de contato, espectrograma,
   níveis, BPM, fim da voz) + `python3 scripts/transcrever.py video.mp4 pt|es` (fala com tempo, para a
