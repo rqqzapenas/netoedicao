@@ -126,7 +126,7 @@ def main():
     itens = []
     for f in fontes:
         if f.endswith(".jsonl"):
-            itens += [json.loads(l) for l in Path(f).read_text().splitlines() if l.strip()]
+            itens += [json.loads(l) for l in Path(f).read_text().split("\n") if l.strip()]   # split("\n"): legendas têm \u2028
         elif f.startswith("@"):
             itens += listar_perfil(f, mx)
         else:
