@@ -86,3 +86,9 @@ Nunca grave cookie ou senha no repositório. O script mostra "✓ logado como @�
 - O áudio original do b-roll não é usado: o montador deixa todo b-roll mudo.
 - A maioria dos vídeos de receita tem legenda queimada, e todos esses são descartados (regra do dono). Não
   existe "aproveitar só o trecho sem legenda".
+
+## Rostos no b-roll
+- A folha de contato (12 quadros) não pega rosto que aparece 1–2 s no meio da receita ("provando", corte para a
+  câmera). Depois de aprovar clipes novos, rode `python3 scripts/detectar_rostos.py banco/ --saida=rostos.json`
+  (YuNet, 4 quadros/s, ~0,1 s por segundo de vídeo) e junte o resultado ao `evitar_banco.json` do produto.
+- Rodada 3 do finger foods: 46 dos 136 clipes tinham algum trecho com rosto.

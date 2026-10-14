@@ -306,3 +306,7 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   para a mesma palavra em todos os ads).
 - Clipe de contexto específico (ex.: café/latte só em copy de empresa/coffee break) → `evitar` inteiro nos outros ads.
 - Banco finger foods: pasta única `banco_ff/` (136 clipes) montada a partir de `banco.tsv`.
+- Antes de renderizar, cruze o `edl.json` com o `rostos.json` do banco (nenhuma cena pode cair num trecho com
+  rosto) e olhe a grade: quadro branco/vazio, máquina industrial, close desfocado → `evitar` e monte de novo.
+- CTA falado sem "botão" (ex.: "Me chama no WhatsApp agora"): a lista de frases inclui "me chama no whatsapp";
+  se o Whisper errar a frase, use `cta_tempo` (início da frase − 0,2 s).
