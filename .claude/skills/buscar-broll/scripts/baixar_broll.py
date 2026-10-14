@@ -118,6 +118,7 @@ def folha(video, png):
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("--")]
     opt = dict(a[2:].split("=", 1) for a in sys.argv[1:] if a.startswith("--") and "=" in a)
+    # --manter-ordem: respeita a ordem do jsonl (ex.: ranking já priorizado por país/idioma)
     pasta = Path(args[-1]); fontes = args[:-1]
     mx, min_plays = int(opt.get("max", 40)), int(opt.get("min-plays", 0))
     (pasta / "videos").mkdir(parents=True, exist_ok=True); (pasta / "folhas").mkdir(exist_ok=True)
@@ -144,7 +145,8 @@ def main():
         if "termo" in it and not relevante(it):
             continue                                   # legenda sem nada de comida → fora
         fila.append(it)
-    fila.sort(key=lambda x: -(x.get("plays") or 0))
+    if "--manter-ordem" not in sys.argv:
+        fila.sort(key=lambda x: -(x.get("plays") or 0))
     fila = fila[:mx]
     print(f"{len(fila)} candidatos para baixar")
 
