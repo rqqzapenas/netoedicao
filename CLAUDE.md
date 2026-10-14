@@ -32,5 +32,9 @@ método e é alimentada a cada referência nova (`references/`). Resumo:
 - Versões oficiais: conferir o MP4 antes de entregar (ícone do CTA reto, voz inteira até a última palavra).
 - Nunca repetir o mesmo trecho de b-roll; faltou material → pedir/buscar mais b-roll (banco ≥ 1,3× a duração).
 - Fonte do CTA = "Sistema" do CapCut (equivalente usado: Montserrat SemiBold).
+- **NUNCA baixar b-roll com legenda/texto na imagem** (regra absoluta; `baixar_broll.py` checa com OCR antes do download).
 - B-roll do TikTok: skill `buscar-broll` (busca logada com a conta secundária via `TIKTOK_COOKIES`/`TIKTOK_SESSIONID`
   no ambiente — nunca no repo nem no chat; perfis e links baixam sem login).
+- Skill `video-use` (browser-use/video-use) instalada em `.claude/skills/video-use`: útil para `helpers/timeline_view.py`
+  (filmstrip + forma de onda de um trecho), color grade e autoavaliação. NÃO usar a queima de legendas dela nos
+  criativos (o método não tem legenda). A transcrição dela pede `ELEVENLABS_API_KEY`; sem a chave, usar o Whisper local.

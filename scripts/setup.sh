@@ -17,7 +17,7 @@ fi
 [ -f silero_vad.onnx ] || curl -sSL -o silero_vad.onnx https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx
 
 # Busca/download de b-roll no TikTok (skill buscar-broll)
-pip install -q --break-system-packages -U yt-dlp curl_cffi 2>&1 | grep -v -i warning
+pip install -q --break-system-packages -U yt-dlp curl_cffi rapidocr_onnxruntime requests matplotlib pillow 2>&1 | grep -v -i warning
 (cd "$REPO/.claude/skills/buscar-broll/scripts" && npm i --silent)
 
 if [ "${1:-}" = "--tudo" ]; then   # separação voz/música (spleeter precisa de Python 3.11)
