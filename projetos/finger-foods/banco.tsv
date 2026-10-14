@@ -97,3 +97,55 @@ id	url	status	nome	duracao	resolucao	plays	autor	notas
 7479168578290208022	https://www.tiktok.com/@recetas_faceles_aicha/video/7479168578290208022	aprovado	processo_tortinha_recheio.mp4	51.3	720,1280	4962	recetas_faceles_aicha	tortinhas: massa, forminhas, recheio (★)
 7644533530659212552	https://www.tiktok.com/@foodurang/video/7644533530659212552	aprovado	textura_cerveja_chopp.mp4	8.3	720,1280	2959	foodurang	chopp sendo tirado (★ copy 16-18)
 7220141843789384965	https://www.tiktok.com/@gostodecerveja23/video/7220141843789384965	aprovado	textura_cerveja_copo.mp4	32.3	1080,1920	585100	gostodecerveja23	cerveja sendo servida no copo (★)
+6971069562854984966	https://www.tiktok.com/@jessicatamashiro/video/6971069562854984966	aprovado	final_geleia_queijo_brie_folhado.mp4	20.0	720,1280	1800000	jessicatamashiro	rodada 3
+7171133237211827461	https://www.tiktok.com/@chefcristinahaaland/video/7171133237211827461	aprovado	final_geleia_queijo_brie_cereja.mp4	45.6	1080,1920	1600000	chefcristinahaaland	rodada 3; evitar [[0, 3]]
+7182325630359604526	https://www.tiktok.com/@mizzerybelltiktok/video/7182325630359604526	aprovado	processo_queijo_assado_torradas.mp4	26.3	1080,1920	4700000	mizzerybelltiktok	rodada 3
+7190729417025457414	https://www.tiktok.com/@borapmesa/video/7190729417025457414	aprovado	processo_geleia_queijo_airfryer.mp4	32.5	1080,1920	977500	borapmesa	rodada 3
+7235721562786139393	https://www.tiktok.com/@foodporn/video/7235721562786139393	aprovado	final_brie_assado_cogumelos.mp4	62.7	720,1280	5700000	foodporn	rodada 3
+7236465076302122246	https://www.tiktok.com/@casatargine/video/7236465076302122246	aprovado	processo_canape_espetinho_salame.mp4	24.5	1080,1920	5600000	casatargine	rodada 3
+7260428904643546373	https://www.tiktok.com/@recipesbyvictoria/video/7260428904643546373	aprovado	processo_brie_assado_crosta.mp4	6.0	1080,1920	14600000	recipesbyvictoria	rodada 3
+7336964695678520582	https://www.tiktok.com/@fusqueijao_oficial/video/7336964695678520582	aprovado	final_queijo_derretido_pao.mp4	31.2	1080,1920	5600000	fusqueijao_oficial	rodada 3
+7462037533392768262	https://www.tiktok.com/@cheffmarcoss/video/7462037533392768262	aprovado	processo_petisco_goiabada_bacon.mp4	63.0	1080,1920	1500000	cheffmarcoss	rodada 3
+7493648479261183263	https://www.tiktok.com/@dawnliligreene/video/7493648479261183263	aprovado	textura_vinho_servindo_taca.mp4	14.2	1080,1920	26400	dawnliligreene	rodada 3
+7515091613790506262	https://www.tiktok.com/@cheesyvibesmadrid/video/7515091613790506262	aprovado	processo_tabua_frios_grande.mp4	145.1	480,854	6100000	cheesyvibesmadrid	rodada 3
+7689979768208411934	https://www.tiktok.com/@deliciasysabores3/video/7689979768208411934	aprovado	processo_salgado_queijo_massa_frita.mp4	114.0	1080,1920	1700000	deliciasysabores3	rodada 3; evitar [[97, 999]]
+7332979852858969349	https://www.tiktok.com/@trademark_eventos/video/7332979852858969349	aprovado	gancho_mesa_salgados_festa.mp4	11.4	576,1024	11800	trademark_eventos	rodada 3
+7601546283223911694	https://www.tiktok.com/@badbatchbaking/video/7601546283223911694	aprovado	processo_minihamburguer_salame.mp4	41.0	1080,1920	3000000	badbatchbaking	rodada 3
+7620080024242130197	https://www.tiktok.com/@rotinareal.pousada/video/7620080024242130197	aprovado	gancho_coffee_break_buffet.mp4	47.5	1080,1920	37600	rotinareal.pousada	rodada 3; evitar [[28, 999]]
+7695863895520709906	https://www.tiktok.com/@barista_creativity/video/7695863895520709906	aprovado	textura_cafe_latte.mp4	20.3	576,1024	16200	barista_creativity	rodada 3
+7044613043648597254	https://www.tiktok.com/@cheffabriciocosta/video/7044613043648597254	aprovado	processo_coxinha_caseira.mp4	34.5	720,1280	9200000	cheffabriciocosta	rodada 3
+7227090812885028101	https://www.tiktok.com/@1grandenegocio/video/7227090812885028101	aprovado	gancho_coxinha_producao_massa.mp4	45.4	720,1560	359300	1grandenegocio	rodada 3; evitar [[0, 3], [36, 999]]
+7374086426184404267	https://www.tiktok.com/@cooking_with.kian/video/7374086426184404267	aprovado	processo_salgado_frango_empanado.mp4	44.7	1080,1920	7300000	cooking_with.kian	rodada 3
+7436176908909333816	https://www.tiktok.com/@gabiborgesd/video/7436176908909333816	aprovado	processo_salgado_airfryer.mp4	40.3	1080,1920	6900000	gabiborgesd	rodada 3; evitar [[0, 9.5]]
+7509596536960027910	https://www.tiktok.com/@amandadonderi/video/7509596536960027910	aprovado	processo_salgado_empanado_delivery.mp4	74.3	1080,1920	2500000	amandadonderi	rodada 3; evitar [[38, 50], [59, 999]]
+7568168862819126548	https://www.tiktok.com/@albertooficial98/video/7568168862819126548	aprovado	processo_massa_salgado_industrial.mp4	172.2	576,1024	2900000	albertooficial98	rodada 3; evitar [[0, 57]]
+7586766065170926855	https://www.tiktok.com/@eu.delmondes/video/7586766065170926855	aprovado	processo_coxinha_massa_completa.mp4	82.2	1080,1920	3300000	eu.delmondes	rodada 3; evitar [[0, 6], [80, 999]]
+7676973548581276936	https://www.tiktok.com/@josiassalgados/video/7676973548581276936	aprovado	processo_salgado_industrial.mp4	141.3	576,1024	96100	josiassalgados	rodada 3; evitar [[0, 64], [135, 999]]
+7295112959607557419	https://www.tiktok.com/@girlgonegrilling/video/7295112959607557419	aprovado	processo_enroladinho_carne.mp4	61.1	1080,1920	2400000	girlgonegrilling	rodada 3; evitar [[0, 9], [52, 999]]
+7300728984436821291	https://www.tiktok.com/@bellyfull.net/video/7300728984436821291	aprovado	processo_pate_cream_cheese_nozes.mp4	56.1	720,1280	3000000	bellyfull.net	rodada 3; evitar [[0, 8], [56, 999]]
+7395371206003772715	https://www.tiktok.com/@hesgotflavor/video/7395371206003772715	aprovado	processo_tortinha_carne_forma.mp4	58.0	1080,1920	1500000	hesgotflavor	rodada 3; evitar [[27, 999]]
+7448722647401254174	https://www.tiktok.com/@cookinwithchanel/video/7448722647401254174	aprovado	gancho_bandejas_buffet_catering.mp4	34.3	1080,1920	599900	cookinwithchanel	rodada 3
+7450870509719506222	https://www.tiktok.com/@bubbas_daughter/video/7450870509719506222	aprovado	processo_dip_queijo_gratinado.mp4	97.5	1080,1920	738600	bubbas_daughter	rodada 3; evitar [[28, 42]]
+7504718145471401238	https://www.tiktok.com/@foodbitesblog/video/7504718145471401238	aprovado	final_pate_homus_pepino.mp4	14.9	1080,1920	4500000	foodbitesblog	rodada 3
+7570298886636588310	https://www.tiktok.com/@latiktokdiet/video/7570298886636588310	aprovado	processo_quiche_alcachofra.mp4	40.8	576,1024	2800000	latiktokdiet	rodada 3; evitar [[29, 33.5]]
+7596825980262436126	https://www.tiktok.com/@dianeskyksierrap/video/7596825980262436126	aprovado	processo_enroladinho_pao_forma.mp4	67.6	1080,1920	3700000	dianeskyksierrap	rodada 3; evitar [[9.5, 12.5]]
+7669180367135411477	https://www.tiktok.com/@danielaoliveirasi74/video/7669180367135411477	aprovado	processo_torta_carne_bandeja.mp4	68.3	1080,1920	3500000	danielaoliveirasi74	rodada 3
+7678745443303542030	https://www.tiktok.com/@culinaryluxe_/video/7678745443303542030	aprovado	gancho_mesa_buffet_camarao.mp4	11.1	1080,1920	245700	culinaryluxe_	rodada 3
+7062157151074061614	https://www.tiktok.com/@buzzfunk/video/7062157151074061614	aprovado	textura_vinho_jarra_tabua.mp4	59.7	1080,1920	14000000	buzzfunk	rodada 3; evitar [[0, 999]]
+7171906995170200837	https://www.tiktok.com/@hungry_anja/video/7171906995170200837	aprovado	processo_tortinha_brie_geleia.mp4	27.1	720,1280	2700000	hungry_anja	rodada 3
+7377860258833648928	https://www.tiktok.com/@makesushi1/video/7377860258833648928	aprovado	processo_tabua_individual_frios.mp4	53.3	1080,1922	4000000	makesushi1	rodada 3
+7486512349600320798	https://www.tiktok.com/@loverboards/video/7486512349600320798	aprovado	processo_cones_frios_catering.mp4	64.8	1080,1920	1500000	loverboards	rodada 3
+7613461698015431957	https://www.tiktok.com/@sonhodeouroeventos/video/7613461698015431957	aprovado	gancho_mesa_casamento_decor.mp4	13.5	1080,1920	44300	sonhodeouroeventos	rodada 3; evitar [[0, 4.5], [12.5, 999]]
+7668701942213872909	https://www.tiktok.com/@beegrazing/video/7668701942213872909	aprovado	gancho_mesa_grazing_evento.mp4	39.1	1080,1920	260100	beegrazing	rodada 3; evitar [[0, 18]]
+7238345341404335366	https://www.tiktok.com/@ducavalcantte/video/7238345341404335366	aprovado	processo_salgado_assado_massa.mp4	91.5	1080,1920	3900000	ducavalcantte	rodada 3; evitar [[0, 12], [82, 999]]
+7429068453216062726	https://www.tiktok.com/@danisouza_031/video/7429068453216062726	aprovado	processo_coxinha_batata_empanando.mp4	114.9	1080,1920	1300000	danisouza_031	rodada 3; evitar [[0, 5]]
+7551207197150153989	https://www.tiktok.com/@sandra.a.parecida/video/7551207197150153989	aprovado	processo_massa_coxinha_panela.mp4	168.4	576,1024	1200000	sandra.a.parecida	rodada 3; evitar [[0, 10], [90, 105]]
+7598294910382624008	https://www.tiktok.com/@receitas_vic/video/7598294910382624008	aprovado	processo_folhado_salame_trancado.mp4	15.7	720,1280	5300000	receitas_vic	rodada 3
+7599440699712490770	https://www.tiktok.com/@art.salgadoseconfeitos/video/7599440699712490770	aprovado	processo_enroladinho_presunto_salsicha_2.mp4	61.1	1080,1920	1700000	art.salgadoseconfeitos	rodada 3
+7652457476004023572	https://www.tiktok.com/@sonia_tuzaki/video/7652457476004023572	aprovado	processo_massa_salgado_wok.mp4	179.6	576,1024	940000	sonia_tuzaki	rodada 3; evitar [[0, 14], [95, 999]]
+7227859031380069638	https://www.tiktok.com/@danichoma/video/7227859031380069638	aprovado	processo_bolinha_queijo_frita.mp4	21.6	1080,1920	27400000	danichoma	rodada 3; evitar [[0, 3.5]]
+7427149364684016901	https://www.tiktok.com/@receitassdevo/video/7427149364684016901	aprovado	processo_empadinha_massa_recheio.mp4	75.3	1080,1920	975000	receitassdevo	rodada 3; evitar [[66, 999]]
+7475750720352849207	https://www.tiktok.com/@igorochareceitas/video/7475750720352849207	aprovado	processo_tortinha_forminha_massa.mp4	37.9	1080,1920	424300	igorochareceitas	rodada 3; evitar [[5, 15.5], [33.5, 999]]
+7508539901969698053	https://www.tiktok.com/@danisouza_031/video/7508539901969698053	aprovado	processo_bolinha_queijo_caseira.mp4	81.4	1080,1920	9800000	danisouza_031	rodada 3; evitar [[65, 999]]
+7614294251609804039	https://www.tiktok.com/@delcia_arte/video/7614294251609804039	aprovado	processo_enroladinho_corte.mp4	60.7	1080,1920	501100	delcia_arte	rodada 3
+7632011148778392850	https://www.tiktok.com/@mara.costa325/video/7632011148778392850	aprovado	processo_bolinha_mussarela.mp4	75.8	720,1280	5600000	mara.costa325	rodada 3

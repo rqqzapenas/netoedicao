@@ -76,3 +76,18 @@ coffeebreak, buffetemcasa, mesadesalgados, mesadefesta, cervejagelada, queijoege
 - **Lacunas** (buscar na próxima rodada): reação humana sem fala (pessoas comendo em festa), mesa de chá de bebê / 15 anos /
   aniversário infantil com comida, patê de calabresa específico, ingredientes de mercado (pão de forma, cream cheese,
   requeijão), freezer/congelando, vinho sendo servido, geleia com queijo, cerveja gelando no balde.
+
+## 6. Rodada 3 (pedido do dono: lacunas + banco maior para não repetir b-roll entre ads)
+- 58 hashtags novas (vinho, queijo com geleia, brie assado, jogo, churrasco, coffee break, coxinha, cento de coxinha,
+  salgados fritos, massa de salgado, bolinha de queijo, canapés, appetizers, catering, casamento…): ~5.600 vídeos
+  listados, 471 checados (já descontados os 1.053 vistos nas rodadas 1–2), 52 aprovados → **136 clipes no banco**.
+- Lacunas cobertas: **vinho sendo servido** (`textura_vinho_servindo_taca`), **geleia com queijo** (brie folhado com
+  geleia, brie com cereja, queijo na airfryer com geleia, tortinha de brie com geleia), **coffee break**
+  (`gancho_coffee_break_buffet`, `textura_cafe_latte` — só para copy de empresa/café), **catering/bufê**
+  (bandejas, cones de frios, mesa com camarão), **mesa de evento/casamento**, **petisco vegetariano** (homus com pepino).
+- Hooks 19/20: **coxinha** em quantidade (`gancho_coxinha_producao_massa`) e **salgado sendo feito** (coxinha caseira
+  do começo ao fim, massa de coxinha na panela, bolinha de queijo, enroladinhos, empadinha).
+- Ainda faltam: jogo de futebol com petisco, churrasco com petisco, chá de bebê/15 anos/aniversário infantil com
+  comida (os vídeos achados tinham rosto ou nome escrito), pessoas comendo sem falar para a câmera.
+- Trechos proibidos (rosto, marca, texto que escapou do OCR, tela preta) de todo o banco: `evitar_banco.json` —
+  copie para o `evitar` de cada spec.

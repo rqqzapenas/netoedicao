@@ -297,3 +297,12 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   (bolinha de queijo: mistura → farinha → massa → recheio → corte → bolear → empanar), aterrissando na porção pronta.
 - Trechos proibidos de todo o banco finger foods ficam acumulados em `projetos/finger-foods/ad1x_spec.json`
   (`evitar`): copie o `evitar` do último spec ao começar o próximo criativo.
+
+### Variedade entre ads (pedido do dono: "tá repetindo muito b-roll nos ads")
+- Spec `"outros_ads": ["edl_adX.json", ...]`: o montador prefere, na mesma categoria, o clipe que menos apareceu
+  nos ads anteriores do produto, e prefere clipe ainda não usado no próprio ad antes de voltar a um já usado.
+- Ao começar um ad novo: copie os `edl.json` dos ads anteriores para a pasta e liste em `outros_ads`; copie
+  `projetos/<produto>/evitar_banco.json` para o `evitar`; varie também as âncoras (não use sempre o mesmo clipe
+  para a mesma palavra em todos os ads).
+- Clipe de contexto específico (ex.: café/latte só em copy de empresa/coffee break) → `evitar` inteiro nos outros ads.
+- Banco finger foods: pasta única `banco_ff/` (136 clipes) montada a partir de `banco.tsv`.
