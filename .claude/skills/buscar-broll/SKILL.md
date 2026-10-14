@@ -92,3 +92,12 @@ Nunca grave cookie ou senha no repositório. O script mostra "✓ logado como @�
   câmera). Depois de aprovar clipes novos, rode `python3 scripts/detectar_rostos.py banco/ --saida=rostos.json`
   (YuNet, 4 quadros/s, ~0,1 s por segundo de vídeo) e junte o resultado ao `evitar_banco.json` do produto.
 - Rodada 3 do finger foods: 46 dos 136 clipes tinham algum trecho com rosto.
+
+## Barras pretas embutidas
+- Alguns vídeos vêm com faixa preta queimada na imagem (pillarbox/letterbox dentro do 1080x1920). O `object-fit:
+  cover` não tira isso. Ao aprovar clipes, rode `cropdetect` em cada um e, se a área útil for < 97% da largura ou
+  da altura, recorte e regrave antes de pôr no banco:
+  `ffmpeg -ss <meio> -i x.mp4 -t 3 -vf cropdetect=24:2:0 -f null - 2>&1 | grep -o "crop=[0-9:]*" | sort | uniq -c | sort -rn | head -1`
+  `ffmpeg -i x.mp4 -vf "crop=W:H:X:Y" -c:v libx264 -crf 18 -an x_ok.mp4`
+- Finger foods: `gancho_caixinha_canapes` (laterais) e `gancho_coxinha_producao_massa` (topo/base) foram recortados.
+  Ao restaurar o banco do `banco.tsv`, recorte esses dois de novo.
