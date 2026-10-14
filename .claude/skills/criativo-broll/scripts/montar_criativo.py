@@ -387,7 +387,7 @@ def main():
             sys.exit(f"Âncora aponta para b-roll inexistente: {a['broll']}")
         ta = a.get("tempo")
         if ta is None and linhas:
-            ta = tr.tempo_da_frase(linhas, a["fala"])
+            ta = tr.tempo_da_frase(linhas, a["fala"], float(a.get("depois", 0.0)))   # "depois": frase repetida
         if ta is None:
             print(f"AVISO: não achei \"{a.get('fala')}\" na fala; âncora ignorada."); continue
         ancoras.append((float(ta), nome) + ((float(a["in"]),) if "in" in a else ()))

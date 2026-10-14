@@ -1,0 +1,329 @@
+{
+ "nome": "ad18_finger_foods",
+ "idioma": "pt",
+ "voz": "voz.mp3",
+ "musica": "musica_bed.wav",
+ "musica_offset": 0,
+ "musica_inicio": 1.0,
+ "musica_lu": 16,
+ "broll_dir": "broll",
+ "gancho": [
+  "processo_bolinha_queijo_2.mp4"
+ ],
+ "gancho_ate": "aquela porcao",
+ "gancho_ins": [
+  17.5,
+  26.0,
+  52.0,
+  69.0,
+  86.0,
+  94.5
+ ],
+ "sincronia": [
+  {
+   "fala": "aquela porcao",
+   "broll": "gancho_porcao_boteco.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "com a cerveja",
+   "broll": "textura_cerveja_chopp.mp4",
+   "in": 1.5
+  },
+  {
+   "fala": "pro dono",
+   "broll": "final_porcao_batata_cheddar.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "tao barato",
+   "broll": "processo_bolinha_fritura.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "50 porcoes",
+   "broll": "gancho_mesa_boteco_buffet.mp4",
+   "in": 4.1
+  },
+  {
+   "fala": "pote de pate",
+   "broll": "processo_pate_liquidificador.mp4",
+   "in": 79.0
+  },
+  {
+   "fala": "pao de forma",
+   "broll": "processo_torta_fria_pao_forma.mp4",
+   "in": 23.5
+  },
+  {
+   "fala": "levado no forno",
+   "broll": "processo_bruschetta.mp4",
+   "in": 1.6
+  },
+  {
+   "fala": "na minha cozinha",
+   "broll": "processo_coxinha_modelando.mp4"
+  },
+  {
+   "fala": "kit de petisco",
+   "broll": "gancho_caixinha_montagem.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "tema de bote",
+   "broll": "gancho_mesa_petiscos.mp4",
+   "in": 16.0
+  },
+  {
+   "fala": "aniversario de uma vizinha",
+   "broll": "gancho_mesa_festa_canapes.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "com pate",
+   "broll": "processo_pate_processador.mp4",
+   "in": 33.0
+  },
+  {
+   "fala": "torradinha, minha",
+   "broll": "final_bruschetta_burrata.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "minha burger",
+   "broll": "processo_minihamburguer_chapa.mp4",
+   "in": 16.0
+  },
+  {
+   "fala": "e canape",
+   "broll": "final_canape_variados.mp4",
+   "in": 2.0
+  },
+  {
+   "fala": "cobrei 220",
+   "broll": "gancho_caixa_salgados.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "por semana",
+   "broll": "gancho_caixinha_canapes.mp4"
+  },
+  {
+   "fala": "mesmo fone de casa",
+   "broll": "processo_tortinha_folhada.mp4"
+  },
+  {
+   "fala": "100 receitas",
+   "broll": "gancho_mesa_grazing.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "pateis",
+   "broll": "processo_pate_torrada.mp4",
+   "in": 36.0
+  },
+  {
+   "fala": "quichis",
+   "broll": "final_miniquiche.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "canapes, mini",
+   "broll": "final_canape_cone.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "mini hamburguer",
+   "broll": "final_minihamburguer_queijo.mp4",
+   "in": 0.0,
+   "depois": 50
+  },
+  {
+   "fala": "petiscos classicos",
+   "broll": "gancho_coxinha_bandeja.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "guia de embalagem",
+   "broll": "processo_embalagem_salgados.mp4",
+   "in": 18.0
+  },
+  {
+   "fala": "cardapio",
+   "broll": "gancho_mesa_boteco_buffet.mp4",
+   "in": 12.3
+  }
+ ],
+ "cta_entrada": "pop",
+ "cta_linhas": [
+  "Clique no",
+  "botão abaixo"
+ ],
+ "cauda": 9,
+ "evitar": {
+  "final_canape_variados.mp4": [
+   [
+    0,
+    1.8
+   ]
+  ],
+  "processo_quiche_massa.mp4": [
+   [
+    3,
+    12
+   ]
+  ],
+  "processo_enroladinho_massa.mp4": [
+   [
+    30,
+    47
+   ]
+  ],
+  "processo_minihamburguer_chapa.mp4": [
+   [
+    0,
+    6
+   ]
+  ],
+  "processo_pate_torrada.mp4": [
+   [
+    0,
+    7
+   ],
+   [
+    41,
+    47
+   ],
+   [
+    48,
+    60
+   ]
+  ],
+  "processo_torta_pao_linguica.mp4": [
+   [
+    45,
+    70
+   ]
+  ],
+  "processo_minihamburguer_montagem.mp4": [
+   [
+    18,
+    25
+   ]
+  ],
+  "processo_bolinha_queijo_2.mp4": [
+   [
+    95,
+    120
+   ]
+  ],
+  "processo_coxinha_frango.mp4": [
+   [
+    0,
+    2
+   ]
+  ],
+  "final_canape_cone.mp4": [
+   [
+    1.4,
+    3.4
+   ]
+  ],
+  "processo_tabua_frios.mp4": [
+   [
+    0,
+    1
+   ]
+  ],
+  "processo_petisco_frango.mp4": [
+   [
+    8,
+    18
+   ]
+  ],
+  "processo_bruschetta.mp4": [
+   [
+    0,
+    1.5
+   ]
+  ],
+  "textura_cerveja_copo.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "textura_cerveja_chopp.mp4": [
+   [
+    0,
+    1.4
+   ],
+   [
+    3.6,
+    999
+   ]
+  ],
+  "processo_tabua_frios_montagem.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "final_petisco_bacon.mp4": [
+   [
+    1.8,
+    8
+   ],
+   [
+    17.5,
+    20.6
+   ],
+   [
+    28.5,
+    32
+   ]
+  ],
+  "processo_pate_liquidificador.mp4": [
+   [
+    96,
+    102
+   ]
+  ],
+  "processo_embalagem_salgados.mp4": [
+   [
+    0,
+    6
+   ],
+   [
+    38,
+    56
+   ],
+   [
+    86,
+    92
+   ]
+  ],
+  "gancho_mesa_petiscos.mp4": [
+   [
+    0,
+    2.0
+   ]
+  ],
+  "gancho_mesa_frios_buffet.mp4": [
+   [
+    0,
+    8.5
+   ],
+   [
+    16,
+    999
+   ]
+  ],
+  "final_batatinha_bacon.mp4": [
+   [
+    0.4,
+    2.6
+   ]
+  ]
+ }
+}

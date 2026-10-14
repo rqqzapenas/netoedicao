@@ -286,3 +286,14 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   Padrão do produto finger foods a partir do ad17. Faixa curta → emendar no ponto de loop casado na batida
   (`atrim` + `acrossfade=d=0.12`; finger foods: `musica_bed.wav` = 22.15→80.81 + 22.15→).
 - Quando o dono falar um tempo ("no segundo X"), é tempo do criativo/narração, salvo se ele disser "da música".
+
+### ad17/ad18 (finger foods) — recursos e padrões novos
+- `"depois": <s>` numa âncora de `sincronia`: procura a frase só depois desse tempo (frase repetida na copy,
+  ex.: "mini hamburguer" no meio e na lista de receitas).
+- Use a grafia que o Whisper escreveu (ex.: "pateis", "quichis", "mini hambulguer"). Se o relatório avisar
+  "âncora ignorada", confira `transcricao.tsv` e troque a frase.
+- Hook "petisco de bar" (ad17): alternar 2–3 b-rolls de porção/mesa de boteco no gancho (`gancho` com vários
+  clipes + `gancho_ins`). Hook "fazendo a receita" (ad18): uma receita de boteco do início ao fim no gancho
+  (bolinha de queijo: mistura → farinha → massa → recheio → corte → bolear → empanar), aterrissando na porção pronta.
+- Trechos proibidos de todo o banco finger foods ficam acumulados em `projetos/finger-foods/ad1x_spec.json`
+  (`evitar`): copie o `evitar` do último spec ao começar o próximo criativo.
