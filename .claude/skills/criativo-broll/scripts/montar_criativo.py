@@ -106,6 +106,7 @@ class Pool:
         self.rng = rng
         self.clips = {}
         self.repetidos = 0
+        self.outros = {}     # nome do clipe -> nº de cenas nos outros ads do produto
         for f in arquivos:
             D = duracao(f)
             if D >= MIN_CENA + 0.1:
@@ -140,8 +141,11 @@ class Pool:
         def score(c):
             rank = cats.index(c["cat"]) if c["cat"] in cats else (len(cats) + (0 if c["cat"] == "geral" else 1))
             recente = bool(c["tempos"]) and t - c["tempos"][-1] < self.INTERVALO
+            # variedade (pedido do dono): clipe ainda não usado neste ad > já usado; e, na mesma categoria,
+            # o que menos apareceu nos ads anteriores do produto (spec "outros_ads")
             return (not self.livres(c, min(dur, c["dur"] - 0.05)), c["src"] == anterior, c["src"].name in evitar,
-                    recente, rank, len(c["usados"]), self.rng.random())
+                    recente, len(c["tempos"]) > 0, rank, self.outros.get(c["src"].name, 0), len(c["usados"]),
+                    self.rng.random())
         c = min(self.clips.values(), key=score)
         r = self.trecho(c, dur, t)
         if r is None:     # banco esgotado: repete trecho, mas avisa no relatório
@@ -369,6 +373,9 @@ def main():
             shutil.copy(f, dst)
         copias.append(dst)
     pool = Pool(copias, rng)
+    for edl in spec.get("outros_ads", []):              # edl.json dos ads anteriores: evita repetir entre ads
+        for cena in json.load(open((base / edl).resolve()))["cenas"]:
+            pool.outros[cena["src"]] = pool.outros.get(cena["src"], 0) + 1
     for nome, faixas in spec.get("evitar", {}).items():   # trechos proibidos (rosto falando, trecho fraco…)
         c = pool.clips.get(seguro(nome))
         if c:
