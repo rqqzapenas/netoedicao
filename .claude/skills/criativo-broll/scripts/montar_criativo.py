@@ -149,15 +149,26 @@ class Pool:
         return (c,) + r
 
 
-def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
-    """Lista de cenas cobrindo 0→total. `ancoras` = [(tempo, nome_arquivo)] ordenadas."""
+def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng, gancho_fim=None, gancho_ins=None):
+    """Lista de cenas cobrindo 0→total. `ancoras` = [(tempo, nome_arquivo)] ordenadas.
+    `gancho_fim`: tempo em que o gancho termina (ex.: início da aterrissagem); o ritmo do gancho é
+    reescalado para caber exatamente até ali."""
     cenas, t, anterior = [], 0.0, None
     pend = list(ancoras)
     # 1) GANCHO: só o(s) clipe(s) que mostram exatamente o que a primeira frase fala
     if gancho_clips:
-        for i, d in enumerate(GANCHO):
+        ritmo = list(GANCHO)
+        if gancho_fim:
+            fator = gancho_fim / sum(ritmo)
+            ritmo = [max(MIN_CENA, min(MAX_CENA, d * fator)) for d in ritmo]
+            ritmo[-1] += gancho_fim - sum(ritmo)                 # fecha exatamente no corte
+        for i, d in enumerate(ritmo):
             c = pool.clips[gancho_clips[i % len(gancho_clips)]]
-            ini, dd = pool.trecho(c, d, t, permitir_repetir=True)
+            if gancho_ins and i < len(gancho_ins):         # entradas fixas, em ordem (receita avançando)
+                ini, dd = gancho_ins[i], d
+                c["usados"].append((ini, ini + dd)); c["tempos"].append(t)
+            else:
+                ini, dd = pool.trecho(c, d, t, permitir_repetir=True)
             cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": "gancho"})
             t += dd; anterior = c["src"]
     # 2) CORPO + CAUDA, respeitando as âncoras de sincronia
@@ -171,7 +182,8 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
         while pend and pend[0][0] < t - 0.3:           # âncora que ficou para trás (ex.: dentro do gancho)
             pend.pop(0)
         if pend and pend[0][0] < t + d:
-            ta, nome = pend[0]
+            ta, nome = pend[0][:2]
+            ent = pend[0][2] if len(pend[0]) > 2 else None
             if nome is None:                             # ponto de corte (pico do flash branco)
                 if ta - t >= 0.2:
                     d = ta - t
@@ -179,14 +191,22 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng):
             elif ta - t >= 0.45:                         # termina esta cena logo antes da palavra
                 d = ta - 0.1 - t
             else:                                        # esta cena É a da palavra
-                forcado = nome; pend.pop(0); d = max(d, 1.2)
+                forcado = (nome, ent); pend.pop(0); d = max(d, 1.2)
+                if pend and pend[0][1] and pend[0][0] - t < d + 0.45:   # próxima palavra logo em seguida: encurta
+                    d = max(0.5, pend[0][0] - 0.1 - t)
         d = min(d, MAX_CENA, total - t)
         if total - (t + d) < MIN_CENA:
             d = total - t
             if d > MAX_CENA:
                 d /= 2
         if forcado:
-            c = pool.clips[forcado]; ini, dd = pool.trecho(c, d, t, permitir_repetir=True); motivo = "sincronia"
+            c = pool.clips[forcado[0]]
+            if forcado[1] is not None:                     # entrada escolhida a dedo (trecho que mostra a palavra)
+                ini, dd = forcado[1], min(d, c["dur"] - forcado[1] - 0.05)
+                c["usados"].append((ini, ini + dd)); c["tempos"].append(t)
+            else:
+                ini, dd = pool.trecho(c, d, t, permitir_repetir=True)
+            motivo = "sincronia"
         else:
             evitar = {a[1] for a in pend if a[1]}               # reserva os clipes das âncoras para a hora da palavra
             c, ini, dd = pool.escolher(cats, d, anterior, t, evitar); motivo = cats[0]
@@ -349,6 +369,10 @@ def main():
             shutil.copy(f, dst)
         copias.append(dst)
     pool = Pool(copias, rng)
+    for nome, faixas in spec.get("evitar", {}).items():   # trechos proibidos (rosto falando, trecho fraco…)
+        c = pool.clips.get(seguro(nome))
+        if c:
+            c["usados"] += [tuple(f) for f in faixas]
 
     gancho = [seguro(g) for g in spec.get("gancho", [])] or [n for n, c in pool.clips.items() if c["cat"] == "gancho"]
     if not gancho:
@@ -366,10 +390,11 @@ def main():
             ta = tr.tempo_da_frase(linhas, a["fala"])
         if ta is None:
             print(f"AVISO: não achei \"{a.get('fala')}\" na fala; âncora ignorada."); continue
-        ancoras.append((float(ta), nome))
+        ancoras.append((float(ta), nome) + ((float(a["in"]),) if "in" in a else ()))
     flashes = [round(x - 0.3, 2) for x in (tr.tempo_da_frase(linhas, f) for f in spec.get("flash_em", [])) if x is not None]
     ancoras += [(f + 0.07, None) for f in flashes]       # corte escondido no pico do flash
     ancoras.sort(key=lambda a: a[0])
+    ancoras = [a for a in ancoras]
 
     if spec.get("clips"):   # EDL manual tem prioridade total
         cenas, t = [], 0.0
@@ -380,7 +405,13 @@ def main():
             t += d
         total = round(t, 3)
     else:
-        cenas = planejar(total, cta_ini, pool, ancoras, gancho, rng)
+        gfim = None
+        if spec.get("gancho_ate"):                     # frase que encerra o gancho (aterrissagem)
+            gfim = tr.tempo_da_frase(linhas, spec["gancho_ate"]) if linhas else None
+            if gfim:
+                gfim = round(gfim - 0.05, 2)
+                print(f"Gancho termina em {gfim:.2f}s (\"{spec['gancho_ate']}\")")
+        cenas = planejar(total, cta_ini, pool, ancoras, gancho, rng, gfim, spec.get("gancho_ins"))
     t = 0.0
     for c in cenas:   # recompacta (algum b-roll pode ter sido mais curto que o pedido)
         c["inicio"] = round(t, 3); c["dur"] = round(c["dur"], 3); t += c["dur"]
