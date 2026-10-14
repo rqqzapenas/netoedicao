@@ -164,6 +164,9 @@ def main():
                             "--merge-output-format", "mp4", "-o", str(dst), it["url"]])
             if r.returncode != 0 or not dst.exists():
                 print(f"  ✗ {it['url']} — {r.stderr.strip()[:100]}"); continue
+        if not sh(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=codec_type",
+                   "-of", "csv=p=0", str(dst)]).stdout.strip():
+            dst.unlink(); print(f"  ✗ {it['id']} sem trilha de vídeo (post de foto/áudio)"); continue
         dur = folha(dst, pasta / "folhas" / f"{it['id']}.png")
         wh = sh(["ffprobe", "-v", "error", "-select_streams", "v", "-show_entries", "stream=width,height", "-of", "csv=p=0", str(dst)]).stdout.strip()
         linhas.append([it["id"], it.get("autor", ""), str(it.get("plays", "")), f"{dur:.1f}", wh,

@@ -68,3 +68,11 @@ minihamburguer, tortinhas, tortinhasalgada, tortinhadefrango, miniquiche, quiche
 patecaseiro, torradinha, petiscos, petiscosdebar, petiscodeboteco, boteco, tabuadefrios, mesadefrios,
 salgadosdefesta, salgadosparafesta, centodesalgados, coxinha, caixinhadesalgados, boxdesalgados,
 coffeebreak, buffetemcasa, mesadesalgados, mesadefesta, cervejagelada, queijoegeleia, receitasfaceis.
+
+## 5. Status do banco (rodadas 1 e 2)
+- 889 vídeos checados → 727 descartados por texto na imagem → 98 no banco (84 aprovados, 14 parciais), ~59 min de material.
+- Catálogo: `banco.tsv` (restaurar com `.claude/skills/buscar-broll/scripts/restaurar_banco.py banco.tsv broll/`).
+- Página de revisão: https://claude.ai/artifact/E8yypKhZ8fF3uzR8YgQaXE
+- **Lacunas** (buscar na próxima rodada): reação humana sem fala (pessoas comendo em festa), mesa de chá de bebê / 15 anos /
+  aniversário infantil com comida, patê de calabresa específico, ingredientes de mercado (pão de forma, cream cheese,
+  requeijão), freezer/congelando, vinho sendo servido, geleia com queijo, cerveja gelando no balde.
