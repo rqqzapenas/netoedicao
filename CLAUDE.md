@@ -32,3 +32,5 @@ método e é alimentada a cada referência nova (`references/`). Resumo:
 - Versões oficiais: conferir o MP4 antes de entregar (ícone do CTA reto, voz inteira até a última palavra).
 - Nunca repetir o mesmo trecho de b-roll; faltou material → pedir/buscar mais b-roll (banco ≥ 1,3× a duração).
 - Fonte do CTA = "Sistema" do CapCut (equivalente usado: Montserrat SemiBold).
+- B-roll do TikTok: skill `buscar-broll` (busca logada com a conta secundária via `TIKTOK_COOKIES`/`TIKTOK_SESSIONID`
+  no ambiente — nunca no repo nem no chat; perfis e links baixam sem login).
