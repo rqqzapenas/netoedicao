@@ -8,13 +8,16 @@ npx -y hyperframes@latest browser ensure                     # Chrome headless d
 command -v ffmpeg >/dev/null || echo "AVISO: ffmpeg não encontrado"
 
 # Transcrição local (Whisper small via sherpa-onnx). Modelos vêm do GitHub (HuggingFace é bloqueado aqui).
-pip install -q --break-system-packages numpy scipy librosa soundfile sherpa-onnx 2>&1 | grep -v -i warning
+pip install -q --break-system-packages numpy scipy librosa soundfile sherpa-onnx opencv-python-headless 2>&1 | grep -v -i warning
 mkdir -p /opt/ml && cd /opt/ml
 if [ ! -d sherpa-onnx-whisper-small ]; then
   curl -sSL https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/sherpa-onnx-whisper-small.tar.bz2 | tar xj
   rm -f sherpa-onnx-whisper-small/small-encoder.onnx sherpa-onnx-whisper-small/small-decoder.onnx  # usamos o int8
 fi
 [ -f silero_vad.onnx ] || curl -sSL -o silero_vad.onnx https://github.com/k2-fsa/sherpa-onnx/releases/download/asr-models/silero_vad.onnx
+# Detector de rosto (YuNet) para achar trechos com rosto no b-roll (buscar-broll/scripts/detectar_rostos.py)
+mkdir -p face && [ -s face/yunet.onnx ] && [ "$(stat -c%s face/yunet.onnx)" -gt 100000 ] || curl -sSL -o face/yunet.onnx \
+  https://media.githubusercontent.com/media/opencv/opencv_zoo/main/models/face_detection_yunet/face_detection_yunet_2023mar.onnx
 
 # Busca/download de b-roll no TikTok (skill buscar-broll)
 pip install -q --break-system-packages -U yt-dlp curl_cffi rapidocr_onnxruntime requests matplotlib pillow 2>&1 | grep -v -i warning

@@ -26,7 +26,7 @@ CTA_ANTES_DA_FALA = 0.2  # CTA visual entra junto da frase do CTA (30 criativos:
 LUFS_VOZ = -16.0
 MUSICA_LU = 16.0         # música abaixo da voz (30 criativos: salsas 17,6 LU, gelato 14,8 LU), constante do começo ao fim
 FRASES_CTA = ["clique no botao", "clica no botao", "clique no botão", "dale clic", "haz clic", "da clic",
-              "botao aqui embaixo", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
+              "botao aqui embaixo", "me chama no whatsapp", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
 CTA_PADRAO = {"pt": ["Clique no", "botão abaixo"], "es": ["Haz clic en", "el botón de abajo"]}
 
 # Ritmo medido nas referências (duração, categorias preferidas). Gancho = só o objeto do hook falado.

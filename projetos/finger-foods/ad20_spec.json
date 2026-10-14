@@ -1,0 +1,515 @@
+{
+ "nome": "ad20_finger_foods",
+ "idioma": "pt",
+ "voz": "voz.mp3",
+ "musica": "musica_bed.wav",
+ "musica_offset": 0,
+ "musica_inicio": 1.0,
+ "musica_lu": 16,
+ "broll_dir": "broll",
+ "gancho": [
+  "processo_coxinha_massa_completa.mp4"
+ ],
+ "gancho_ate": "centro de coxinha",
+ "gancho_ins": [
+  12.7,
+  26.0,
+  34.0,
+  46.0,
+  60.0,
+  67.0
+ ],
+ "sincronia": [
+  {
+   "fala": "centro de coxinha",
+   "broll": "gancho_coxinha_bandeja.mp4",
+   "in": 8.0
+  },
+  {
+   "fala": "assento de coxinha",
+   "broll": "gancho_coxinha_producao_massa.mp4",
+   "in": 26.0
+  },
+  {
+   "fala": "mesa do casamento",
+   "broll": "gancho_mesa_casamento_decor.mp4",
+   "in": 5.0
+  },
+  {
+   "fala": "pela primeira vez",
+   "broll": "gancho_bandejas_buffet_catering.mp4",
+   "in": 14.0
+  },
+  {
+   "fala": "canape, tortinha",
+   "broll": "processo_canape_espetinho_salame.mp4",
+   "in": 5.0
+  },
+  {
+   "fala": "tortinha e mini",
+   "broll": "processo_tortinha_forminha_massa.mp4",
+   "in": 16.0
+  },
+  {
+   "fala": "mini-amburger",
+   "broll": "processo_minihamburguer_salame.mp4",
+   "in": 2.0
+  },
+  {
+   "fala": "na bandeja",
+   "broll": "processo_cones_frios_catering.mp4",
+   "in": 38.0
+  },
+  {
+   "fala": "com costinha",
+   "broll": "processo_coxinha_caseira.mp4",
+   "in": 30.0
+  },
+  {
+   "fala": "500 pecas fritas",
+   "broll": "gancho_coxinha_maquina.mp4",
+   "in": 6.0
+  },
+  {
+   "fala": "cobrei 700",
+   "broll": "gancho_mesa_buffet_camarao.mp4",
+   "in": 7.0
+  },
+  {
+   "fala": "mae da noiva",
+   "broll": "gancho_mesa_casamento.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "os casamentos",
+   "broll": "gancho_mesa_festa_elegante.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "de empresa",
+   "broll": "gancho_coffee_break_buffet.mp4",
+   "in": 10.0
+  },
+  {
+   "fala": "cobrando por pessoa",
+   "broll": "processo_tabua_individual_frios.mp4",
+   "in": 30.0
+  },
+  {
+   "fala": "100 receitas",
+   "broll": "gancho_mesa_grazing_evento.mp4",
+   "in": 22.0
+  },
+  {
+   "fala": "quiches",
+   "broll": "processo_quiche_alcachofra.mp4",
+   "in": 37.0
+  },
+  {
+   "fala": "tortinhas, mini",
+   "broll": "processo_tortinha_carne_forma.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "mini-ambulguer",
+   "broll": "processo_minihamburguer_salame.mp4",
+   "in": 20.0
+  },
+  {
+   "fala": "quanto cobrar por pessoa",
+   "broll": "processo_tabua_frios_grande.mp4",
+   "in": 125.0
+  }
+ ],
+ "cta_entrada": "pop",
+ "cta_linhas": [
+  "Clique no",
+  "botão abaixo"
+ ],
+ "cauda": 9,
+ "evitar": {
+  "final_canape_variados.mp4": [
+   [
+    0,
+    1.8
+   ]
+  ],
+  "processo_quiche_massa.mp4": [
+   [
+    3,
+    12
+   ]
+  ],
+  "processo_enroladinho_massa.mp4": [
+   [
+    30,
+    47
+   ]
+  ],
+  "processo_minihamburguer_chapa.mp4": [
+   [
+    0,
+    6
+   ]
+  ],
+  "processo_pate_torrada.mp4": [
+   [
+    0,
+    7
+   ],
+   [
+    41,
+    47
+   ],
+   [
+    48,
+    60
+   ]
+  ],
+  "processo_torta_pao_linguica.mp4": [
+   [
+    45,
+    70
+   ]
+  ],
+  "processo_minihamburguer_montagem.mp4": [
+   [
+    18,
+    25
+   ]
+  ],
+  "processo_bolinha_queijo_2.mp4": [
+   [
+    95,
+    120
+   ]
+  ],
+  "processo_coxinha_frango.mp4": [
+   [
+    0,
+    2
+   ]
+  ],
+  "final_canape_cone.mp4": [
+   [
+    1.4,
+    3.4
+   ]
+  ],
+  "processo_tabua_frios.mp4": [
+   [
+    0,
+    1
+   ]
+  ],
+  "processo_petisco_frango.mp4": [
+   [
+    8,
+    18
+   ]
+  ],
+  "processo_bruschetta.mp4": [
+   [
+    0,
+    1.5
+   ]
+  ],
+  "textura_cerveja_copo.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "textura_cerveja_chopp.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "processo_tabua_frios_montagem.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "final_petisco_bacon.mp4": [
+   [
+    1.8,
+    8
+   ],
+   [
+    17.5,
+    20.6
+   ],
+   [
+    28.5,
+    32
+   ]
+  ],
+  "processo_pate_liquidificador.mp4": [
+   [
+    96,
+    102
+   ]
+  ],
+  "processo_embalagem_salgados.mp4": [
+   [
+    0,
+    6
+   ],
+   [
+    38,
+    56
+   ],
+   [
+    86,
+    92
+   ]
+  ],
+  "gancho_mesa_petiscos.mp4": [
+   [
+    0,
+    2.0
+   ]
+  ],
+  "gancho_mesa_frios_buffet.mp4": [
+   [
+    0,
+    8.5
+   ],
+   [
+    16,
+    999
+   ]
+  ],
+  "final_batatinha_bacon.mp4": [
+   [
+    0.4,
+    2.6
+   ]
+  ],
+  "final_geleia_queijo_brie_cereja.mp4": [
+   [
+    0,
+    3
+   ]
+  ],
+  "processo_salgado_queijo_massa_frita.mp4": [
+   [
+    97,
+    999
+   ]
+  ],
+  "gancho_coffee_break_buffet.mp4": [
+   [
+    28,
+    999
+   ]
+  ],
+  "gancho_coxinha_producao_massa.mp4": [
+   [
+    0,
+    3
+   ],
+   [
+    36,
+    999
+   ]
+  ],
+  "processo_salgado_airfryer.mp4": [
+   [
+    0,
+    9.5
+   ]
+  ],
+  "processo_salgado_empanado_delivery.mp4": [
+   [
+    38,
+    50
+   ],
+   [
+    59,
+    999
+   ]
+  ],
+  "processo_massa_salgado_industrial.mp4": [
+   [
+    0,
+    57
+   ]
+  ],
+  "processo_coxinha_massa_completa.mp4": [
+   [
+    0,
+    8
+   ],
+   [
+    80,
+    999
+   ]
+  ],
+  "processo_salgado_industrial.mp4": [
+   [
+    0,
+    64
+   ],
+   [
+    135,
+    999
+   ]
+  ],
+  "processo_enroladinho_carne.mp4": [
+   [
+    0,
+    9
+   ],
+   [
+    52,
+    999
+   ]
+  ],
+  "processo_pate_cream_cheese_nozes.mp4": [
+   [
+    0,
+    8
+   ],
+   [
+    56,
+    999
+   ]
+  ],
+  "processo_tortinha_carne_forma.mp4": [
+   [
+    27,
+    999
+   ]
+  ],
+  "processo_quiche_alcachofra.mp4": [
+   [
+    29,
+    33.5
+   ]
+  ],
+  "textura_vinho_jarra_tabua.mp4": [
+   [
+    0,
+    999
+   ]
+  ],
+  "gancho_mesa_casamento_decor.mp4": [
+   [
+    0,
+    4.5
+   ],
+   [
+    12.5,
+    999
+   ]
+  ],
+  "gancho_mesa_grazing_evento.mp4": [
+   [
+    0,
+    18
+   ]
+  ],
+  "processo_dip_queijo_gratinado.mp4": [
+   [
+    28,
+    42
+   ]
+  ],
+  "gancho_mesa_festa_buffet.mp4": [
+   [
+    0,
+    1.5
+   ]
+  ],
+  "processo_enroladinho_pao_forma.mp4": [
+   [
+    9.5,
+    12.5
+   ]
+  ],
+  "processo_salgado_assado_massa.mp4": [
+   [
+    0,
+    12
+   ],
+   [
+    82,
+    999
+   ]
+  ],
+  "processo_coxinha_batata_empanando.mp4": [
+   [
+    0,
+    5
+   ]
+  ],
+  "processo_massa_coxinha_panela.mp4": [
+   [
+    0,
+    10
+   ],
+   [
+    90,
+    105
+   ]
+  ],
+  "processo_massa_salgado_wok.mp4": [
+   [
+    0,
+    14
+   ],
+   [
+    95,
+    999
+   ]
+  ],
+  "processo_bolinha_queijo_frita.mp4": [
+   [
+    0,
+    3.5
+   ]
+  ],
+  "processo_empadinha_massa_recheio.mp4": [
+   [
+    66,
+    999
+   ]
+  ],
+  "processo_tortinha_forminha_massa.mp4": [
+   [
+    5,
+    15.5
+   ],
+   [
+    33.5,
+    999
+   ]
+  ],
+  "processo_bolinha_queijo_caseira.mp4": [
+   [
+    65,
+    999
+   ]
+  ],
+  "processo_cones_frios_catering.mp4": [
+   [
+    25,
+    30
+   ]
+  ],
+  "textura_cafe_latte.mp4": [
+   [
+    0,
+    999
+   ]
+  ]
+ },
+ "outros_ads": [
+  "edl_ad16.json",
+  "edl_ad17.json",
+  "edl_ad18.json"
+ ]
+}
