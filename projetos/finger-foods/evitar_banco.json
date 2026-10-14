@@ -149,6 +149,10 @@
   [
    7.5,
    999
+  ],
+  [
+   3.5,
+   999
   ]
  ],
  "processo_tabua_frios.mp4": [
@@ -899,6 +903,10 @@
   [
    51.7,
    52.55
+  ],
+  [
+   0,
+   2.5
   ]
  ],
  "processo_minihamburguer_desfiado.mp4": [
@@ -975,12 +983,22 @@
   [
    10.5,
    12.5
+  ],
+  [
+   60,
+   999
   ]
  ],
  "processo_tortinha_massa_aro.mp4": [
   [
    11,
    13
+  ]
+ ],
+ "final_bruschetta_burrata.mp4": [
+  [
+   0,
+   1
   ]
  ]
 }
