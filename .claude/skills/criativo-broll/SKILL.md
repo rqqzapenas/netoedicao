@@ -274,3 +274,12 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
 ## Pendências
 - Busca de b-roll no TikTok: skill futura.
 - Se o dono mandar o arquivo da fonte "Sistema" do CapCut, troque a Montserrat no `@font-face`.
+
+### Ajustes do dono no ad16 (v2) — valem para os próximos
+- Bebida (cerveja) só nos momentos estratégicos em que a voz fala dela; nunca como enchimento. No spec: `evitar`
+  cobrindo o resto do clipe de bebida (ex.: `[[0, in-0.1], [in+dur, 999]]`).
+- Na aterrissagem do gancho ("…por causa desses petiscos aqui"), usar a mesa/porção mais farta e apetitosa
+  (ex.: `gancho_porcao_boteco`), não um close de um petisco só.
+- B-roll vetado pelo dono → `evitar: {clip: [[0, 999]]}` no spec do produto.
+- Música: o dono pode pedir outro ponto de entrada da faixa (finger foods: a partir do 0:01, não do 0:22).
+  Faixa curta → emendar no ponto de loop casado na batida (`atrim` + `acrossfade=d=0.12`).

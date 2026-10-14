@@ -2,7 +2,7 @@
  "nome": "ad16_finger_foods",
  "idioma": "pt",
  "voz": "voz.mp3",
- "musica": "musica_bed.wav",
+ "musica": "musica_bed1.wav",
  "musica_offset": 0,
  "musica_lu": 16,
  "broll_dir": "broll",
@@ -17,8 +17,13 @@
    "in": 0.5
   },
   {
-   "fala": "desses petiscos aqui",
+   "fala": "ficar em casa",
    "broll": "final_minihamburguer_queijo.mp4",
+   "in": 0.0
+  },
+  {
+   "fala": "desses petiscos aqui",
+   "broll": "gancho_porcao_boteco.mp4",
    "in": 0.0
   },
   {
@@ -94,7 +99,7 @@
   {
    "fala": "boteco ai na sua casa",
    "broll": "gancho_porcao_boteco.mp4",
-   "in": 0.0
+   "in": 3.0
   }
  ],
  "cta_entrada": "pop",
@@ -187,6 +192,32 @@
    [
     0,
     1.5
+   ]
+  ],
+  "textura_cerveja_copo.mp4": [
+   [
+    0,
+    11.9
+   ],
+   [
+    13.6,
+    999
+   ]
+  ],
+  "textura_cerveja_chopp.mp4": [
+   [
+    0,
+    1.4
+   ],
+   [
+    3.6,
+    999
+   ]
+  ],
+  "processo_tabua_frios_montagem.mp4": [
+   [
+    0,
+    999
    ]
   ]
  }
