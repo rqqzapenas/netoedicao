@@ -281,5 +281,8 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
 - Na aterrissagem do gancho ("…por causa desses petiscos aqui"), usar a mesa/porção mais farta e apetitosa
   (ex.: `gancho_porcao_boteco`), não um close de um petisco só.
 - B-roll vetado pelo dono → `evitar: {clip: [[0, 999]]}` no spec do produto.
-- Música: o dono pode pedir outro ponto de entrada da faixa (finger foods: a partir do 0:01, não do 0:22).
-  Faixa curta → emendar no ponto de loop casado na batida (`atrim` + `acrossfade=d=0.12`).
+- **Música começando "no segundo 00:01" = 1 s depois do início do criativo** (o 1º segundo é só voz, sem música),
+  NÃO o ponto da faixa. No spec: `"musica_inicio": 1.0`; a faixa continua a partir do 0:22 (`musica_offset`).
+  Padrão do produto finger foods a partir do ad17. Faixa curta → emendar no ponto de loop casado na batida
+  (`atrim` + `acrossfade=d=0.12`; finger foods: `musica_bed.wav` = 22.15→80.81 + 22.15→).
+- Quando o dono falar um tempo ("no segundo X"), é tempo do criativo/narração, salvo se ele disser "da música".
