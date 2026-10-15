@@ -83,6 +83,10 @@
   [
    52.95,
    59.3
+  ],
+  [
+   24.5,
+   28
   ]
  ],
  "processo_torta_pao_linguica.mp4": [
@@ -271,6 +275,14 @@
   [
    41.95,
    43.3
+  ],
+  [
+   3,
+   6.7
+  ],
+  [
+   43,
+   52
   ]
  ],
  "gancho_mesa_petiscos.mp4": [
@@ -365,6 +377,10 @@
   [
    59,
    999
+  ],
+  [
+   18,
+   21
   ]
  ],
  "processo_massa_salgado_industrial.mp4": [
@@ -419,6 +435,10 @@
   [
    81.45,
    83.55
+  ],
+  [
+   119.5,
+   124
   ]
  ],
  "processo_enroladinho_carne.mp4": [
@@ -459,6 +479,10 @@
   [
    27.5,
    29
+  ],
+  [
+   19.5,
+   22.5
   ]
  ],
  "processo_tortinha_carne_forma.mp4": [
@@ -861,6 +885,14 @@
   [
    0,
    2.5
+  ],
+  [
+   13,
+   15.6
+  ],
+  [
+   4,
+   7
   ]
  ],
  "gancho_caixinha_montagem.mp4": [
@@ -1009,6 +1041,10 @@
   [
    17,
    20
+  ],
+  [
+   14.5,
+   18.5
   ]
  ],
  "processo_petisco_goiabada_bacon.mp4": [
@@ -1057,6 +1093,18 @@
   [
    15.7,
    16.6
+  ]
+ ],
+ "final_canape_pepino.mp4": [
+  [
+   11.5,
+   13.7
+  ]
+ ],
+ "processo_tabua_individual_frios.mp4": [
+  [
+   9.5,
+   12
   ]
  ]
 }

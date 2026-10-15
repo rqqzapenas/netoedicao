@@ -26,7 +26,7 @@ CTA_ANTES_DA_FALA = 0.2  # CTA visual entra junto da frase do CTA (30 criativos:
 LUFS_VOZ = -16.0
 MUSICA_LU = 16.0         # música abaixo da voz (30 criativos: salsas 17,6 LU, gelato 14,8 LU), constante do começo ao fim
 FRASES_CTA = ["clique no botao", "clica no botao", "clique no botão", "dale clic", "haz clic", "da clic",
-              "botao aqui embaixo", "me chama no whatsapp", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
+              "botao aqui embaixo", "me chama no whatsapp", "clica aqui embaixo", "clique aqui abaixo", "clique aqui embaixo", "botón aquí abajo", "boton aqui abajo", "botao abaixo", "boton de abajo"]
 CTA_PADRAO = {"pt": ["Clique no", "botão abaixo"], "es": ["Haz clic en", "el botón de abajo"]}
 
 # Ritmo medido nas referências (duração, categorias preferidas). Gancho = só o objeto do hook falado.
@@ -345,9 +345,17 @@ def main():
     # ---- CTA: ancorado na frase falada "clique no botão…"
     cta_ini = spec.get("cta_tempo")
     if cta_ini is None and linhas:
-        achados = [x for x in (tr.tempo_da_frase(linhas, f, voz_fim - 25) for f in FRASES_CTA) if x is not None]
+        # regra do dono (ad27+): o CTA visual entra só no CTA FINAL -> última ocorrência de qualquer frase de CTA
+        achados = []
+        for a, b, t in linhas:
+            nt = tr._norm(t)
+            for f in FRASES_CTA:
+                alvo = tr._norm(f)
+                i = nt.rfind(alvo)
+                if i >= 0 and nt:
+                    achados.append(round(a + (b - a) * i / len(nt), 2))
         if achados:
-            cta_ini = min(achados) - CTA_ANTES_DA_FALA
+            cta_ini = max(achados) - CTA_ANTES_DA_FALA
     if cta_ini is None:
         cta_ini = voz_fim - 5.0
         print("AVISO: não achei a frase do CTA na voz; CTA posto 5 s antes do fim da voz. Confira.")

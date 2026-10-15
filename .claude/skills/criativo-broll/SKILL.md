@@ -322,3 +322,13 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   faça uma folha com a caixa desenhada e confirme no olho; rosto confirmado → `rostos_banco.json` + `evitar_banco.json`.
 - `projetos/finger-foods/rostos_banco.json` é a lista curada (só trechos com rosto confirmado).
 - Olhe o gancho (primeiros 6 s) em tamanho grande, não só na grade: rosto pequeno some na miniatura.
+
+### Regras do dono a partir do ad27 (finger foods)
+- **CTA na tela só no CTA FINAL.** Copy com mais de uma chamada ("Eu te mando no WhatsApp…" / "Clique aqui abaixo…"
+  no meio e "Clica no botão…" no fim): o "Clique no botão abaixo" + ícone entra só na última frase de CTA. O montador
+  já faz isso (última ocorrência de qualquer frase de `FRASES_CTA`). Ads antigos não foram corrigidos (pedido do dono).
+- **Varie os b-rolls entre ads.** Ao montar um ad novo, bloqueie no `evitar` todos os trechos (±0,3 s) já usados nos
+  `edl.json` dos ads anteriores do produto; só gancho e âncoras escolhidas de propósito podem repetir trecho.
+  Resultado nos ads 27–30: de ~35 % para ~5–15 % de trechos repetidos. Escolha ganchos e âncoras entre os clipes
+  menos usados (conte os usos nos `edl.json` antes).
+- Trechos com pote/garrafa de marca, taça de vinho ao fundo, quadro branco/borrado → `evitar_banco.json`.
