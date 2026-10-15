@@ -12,19 +12,20 @@
  ],
  "gancho_ate": "comecar a vender",
  "gancho_ins": [
-  0.3,
-  2.6,
-  4.8,
-  6.9,
-  9.3,
-  11.8,
-  13.6
+  7.0,
+  8.0,
+  9.0,
+  11.0,
+  12.3,
+  13.6,
+  14.6,
+  15.2
  ],
  "sincronia": [
   {
    "fala": "comecar a vender",
    "broll": "processo_canape_confeitado.mp4",
-   "in": 16.7
+   "in": 17.0
   },
   {
    "fala": "primeiras encomendas",
@@ -230,6 +231,10 @@
    [
     20.2,
     22.3
+   ],
+   [
+    0.4,
+    2.9
    ]
   ],
   "processo_bolinha_queijo_2.mp4": [
@@ -1154,6 +1159,20 @@
    [
     0,
     999
+   ]
+  ],
+  "processo_canape_confeitado.mp4": [
+   [
+    0,
+    7.0
+   ],
+   [
+    9.8,
+    10.6
+   ],
+   [
+    15.7,
+    16.6
    ]
   ]
  },

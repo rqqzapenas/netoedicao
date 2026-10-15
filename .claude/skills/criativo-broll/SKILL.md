@@ -314,3 +314,11 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   render em `~/.cache/hyperframes/history` (~2 GB por render). Depois de entregar, apague `assets/broll` dos
   projetos prontos, o render bruto (`full.mp4`) e as pastas antigas do histórico.
 - O montador recopia um clipe para `assets/broll` quando o arquivo do banco mudou (recorte, regravação).
+
+### Rostos no b-roll (ad24, finger foods)
+- O detector usado para montar `rostos_banco.json` perdeu rosto pequeno/de lado no topo do quadro
+  (`processo_canape_confeitado` 0–7 s, `processo_minihamburguer_montagem` 0,4–2,9 s). O YuNet do OpenCV pega esses,
+  mas dá muito falso positivo em comida (score até 0,85). Fluxo: rode o YuNet só nos trechos usados pelos `edl.json`,
+  faça uma folha com a caixa desenhada e confirme no olho; rosto confirmado → `rostos_banco.json` + `evitar_banco.json`.
+- `projetos/finger-foods/rostos_banco.json` é a lista curada (só trechos com rosto confirmado).
+- Olhe o gancho (primeiros 6 s) em tamanho grande, não só na grade: rosto pequeno some na miniatura.

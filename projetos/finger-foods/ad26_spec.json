@@ -81,7 +81,7 @@
   {
    "fala": "80 canapes",
    "broll": "processo_canape_confeitado.mp4",
-   "in": 0.5
+   "in": 7.2
   },
   {
    "fala": "pate de calabresa",
@@ -320,6 +320,10 @@
    [
     20.2,
     22.3
+   ],
+   [
+    0.4,
+    2.9
    ]
   ],
   "processo_bolinha_queijo_2.mp4": [
@@ -1244,6 +1248,20 @@
    [
     0,
     999
+   ]
+  ],
+  "processo_canape_confeitado.mp4": [
+   [
+    0,
+    7.0
+   ],
+   [
+    9.8,
+    10.6
+   ],
+   [
+    15.7,
+    16.6
    ]
   ]
  },

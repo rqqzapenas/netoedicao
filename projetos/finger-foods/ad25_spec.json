@@ -25,7 +25,7 @@
   {
    "fala": "faz em casa",
    "broll": "processo_canape_confeitado.mp4",
-   "in": 6.7
+   "in": 7.2
   },
   {
    "fala": "buffet cobra",
@@ -115,7 +115,7 @@
   {
    "fala": "mesmo tamanho",
    "broll": "processo_canape_confeitado.mp4",
-   "in": 16.5
+   "in": 17.3
   },
   {
    "fala": "em bandeja",
@@ -308,6 +308,10 @@
    [
     20.2,
     22.3
+   ],
+   [
+    0.4,
+    2.9
    ]
   ],
   "processo_bolinha_queijo_2.mp4": [
@@ -1232,6 +1236,20 @@
    [
     0,
     999
+   ]
+  ],
+  "processo_canape_confeitado.mp4": [
+   [
+    0,
+    7.0
+   ],
+   [
+    9.8,
+    10.6
+   ],
+   [
+    15.7,
+    16.6
    ]
   ]
  },
