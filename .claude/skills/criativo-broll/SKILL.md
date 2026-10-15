@@ -332,3 +332,15 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   Resultado nos ads 27–30: de ~35 % para ~5–15 % de trechos repetidos. Escolha ganchos e âncoras entre os clipes
   menos usados (conte os usos nos `edl.json` antes).
 - Trechos com pote/garrafa de marca, taça de vinho ao fundo, quadro branco/borrado → `evitar_banco.json`.
+
+### Começo forte (regra do dono, depois do ad30)
+- **O começo do vídeo é a parte mais importante: os b-rolls mais fortes e congruentes vão para o começo, nunca
+  guardados para o fim.** Produto pronto bonito, mesa farta, os clipes com ★ no `banco.tsv` e os que mais batem com
+  o que a voz fala → primeiros ~25 s (gancho + aterrissagem + primeiro bloco).
+- No montador: até `INICIO_FORTE` (25 s; spec `"inicio_forte"`) as cenas livres usam `["final", "textura",
+  "processo"]` e escolhem primeiro os clipes com mais ★. As notas vêm do spec `"banco_tsv": "<caminho>/banco.tsv"`
+  (conta as ★ da coluna de notas) e/ou `"estrelas": {"clipe.mp4": 2}`. **Sempre ponha `banco_tsv` no spec.**
+  Teste no ad28: cenas livres de 4–25 s com ★ foram de 1/9 para 9/9, e produto pronto de 2/9 para 8/9.
+- Nas âncoras (`sincronia`): para as falas dos primeiros 25 s use o trecho mais bonito e congruente que existir,
+  mesmo que seja um clipe ★ bastante usado (com trecho novo). Âncoras do fim podem usar clipes de apoio.
+- A aterrissagem do gancho é sempre o money shot mais apetitoso do banco para aquele assunto.

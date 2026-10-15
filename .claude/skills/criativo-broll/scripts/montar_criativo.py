@@ -47,6 +47,10 @@ CORPO = [  # processo calmo 1,6–2,0 s intercalado com rajadas 0,6–0,9 s e re
 ]
 CAUDA_RITMO = [(2.0, ["final", "textura"]), (1.63, ["final"]), (2.0, ["textura"]), (1.77, ["final"])]
 CATEGORIAS = ["gancho", "final", "processo", "textura", "reacao"]
+# regra do dono (ad30+): o começo é a parte mais importante -> os b-rolls mais fortes/congruentes vão para o começo.
+# Até INICIO_FORTE s o corpo prioriza produto pronto ("final") e os clipes com mais estrelas (★ no banco.tsv).
+INICIO_FORTE = 25.0
+CATS_FORTE = ["final", "textura", "processo"]
 
 
 def sh(cmd, **kw):
@@ -107,6 +111,7 @@ class Pool:
         self.clips = {}
         self.repetidos = 0
         self.outros = {}     # nome do clipe -> nº de cenas nos outros ads do produto
+        self.estrelas = {}   # nome do clipe -> nota (★) do banco; usada para pôr o melhor no começo
         for f in arquivos:
             D = duracao(f)
             if D >= MIN_CENA + 0.1:
@@ -137,15 +142,17 @@ class Pool:
         c["usados"].append((ini, ini + d)); c["tempos"].append(t)
         return ini, d
 
-    def escolher(self, cats, dur, anterior, t, evitar=()):
+    def escolher(self, cats, dur, anterior, t, evitar=(), forte=False):
         def score(c):
             rank = cats.index(c["cat"]) if c["cat"] in cats else (len(cats) + (0 if c["cat"] == "geral" else 1))
             recente = bool(c["tempos"]) and t - c["tempos"][-1] < self.INTERVALO
+            # começo forte: os clipes com mais ★ primeiro (antes da categoria)
+            estrela = -self.estrelas.get(c["src"].name, 0) if forte else 0
             # variedade (pedido do dono): clipe ainda não usado neste ad > já usado; e, na mesma categoria,
             # o que menos apareceu nos ads anteriores do produto (spec "outros_ads")
             return (not self.livres(c, min(dur, c["dur"] - 0.05)), c["src"] == anterior, c["src"].name in evitar,
-                    recente, len(c["tempos"]) > 0, rank, self.outros.get(c["src"].name, 0), len(c["usados"]),
-                    self.rng.random())
+                    recente, len(c["tempos"]) > 0, estrela, rank, self.outros.get(c["src"].name, 0),
+                    len(c["usados"]), self.rng.random())
         c = min(self.clips.values(), key=score)
         r = self.trecho(c, dur, t)
         if r is None:     # banco esgotado: repete trecho, mas avisa no relatório
@@ -153,7 +160,8 @@ class Pool:
         return (c,) + r
 
 
-def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng, gancho_fim=None, gancho_ins=None):
+def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng, gancho_fim=None, gancho_ins=None,
+             inicio_forte=INICIO_FORTE):
     """Lista de cenas cobrindo 0→total. `ancoras` = [(tempo, nome_arquivo)] ordenadas.
     `gancho_fim`: tempo em que o gancho termina (ex.: início da aterrissagem); o ritmo do gancho é
     reescalado para caber exatamente até ali."""
@@ -182,6 +190,8 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng, gancho_fim=None, 
             d, cats = CAUDA_RITMO[i_cauda % len(CAUDA_RITMO)]; i_cauda += 1
         else:
             d, cats = CORPO[i_corpo % len(CORPO)]; i_corpo += 1
+            if t < inicio_forte:
+                cats = CATS_FORTE
         forcado = None
         while pend and pend[0][0] < t - 0.3:           # âncora que ficou para trás (ex.: dentro do gancho)
             pend.pop(0)
@@ -213,7 +223,7 @@ def planejar(total, cta_ini, pool, ancoras, gancho_clips, rng, gancho_fim=None, 
             motivo = "sincronia"
         else:
             evitar = {a[1] for a in pend if a[1]}               # reserva os clipes das âncoras para a hora da palavra
-            c, ini, dd = pool.escolher(cats, d, anterior, t, evitar); motivo = cats[0]
+            c, ini, dd = pool.escolher(cats, d, anterior, t, evitar, forte=t < inicio_forte); motivo = cats[0]
         cenas.append({"inicio": t, "dur": dd, "clip": c, "in": ini, "motivo": motivo})
         t += dd; anterior = c["src"]
     return cenas
@@ -385,6 +395,14 @@ def main():
     for edl in spec.get("outros_ads", []):              # edl.json dos ads anteriores: evita repetir entre ads
         for cena in json.load(open((base / edl).resolve()))["cenas"]:
             pool.outros[cena["src"]] = pool.outros.get(cena["src"], 0) + 1
+    # notas dos clipes (★): spec "estrelas" {clipe: n} e/ou "banco_tsv" (conta as ★ da coluna de notas)
+    if spec.get("banco_tsv"):
+        for ln in open((base / spec["banco_tsv"]).resolve(), encoding="utf-8").read().splitlines()[1:]:
+            col = ln.split("\t")
+            if len(col) >= 9 and col[3]:
+                pool.estrelas[seguro(col[3])] = col[8].count("★")
+    for nome, n in spec.get("estrelas", {}).items():
+        pool.estrelas[seguro(nome)] = n
     for nome, faixas in spec.get("evitar", {}).items():   # trechos proibidos (rosto falando, trecho fraco…)
         c = pool.clips.get(seguro(nome))
         if c:
@@ -427,7 +445,8 @@ def main():
             if gfim:
                 gfim = round(gfim - 0.05, 2)
                 print(f"Gancho termina em {gfim:.2f}s (\"{spec['gancho_ate']}\")")
-        cenas = planejar(total, cta_ini, pool, ancoras, gancho, rng, gfim, spec.get("gancho_ins"))
+        cenas = planejar(total, cta_ini, pool, ancoras, gancho, rng, gfim, spec.get("gancho_ins"),
+                         float(spec.get("inicio_forte", INICIO_FORTE)))
     t = 0.0
     for c in cenas:   # recompacta (algum b-roll pode ter sido mais curto que o pedido)
         c["inicio"] = round(t, 3); c["dur"] = round(c["dur"], 3); t += c["dur"]
