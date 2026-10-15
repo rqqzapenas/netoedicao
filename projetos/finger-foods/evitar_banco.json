@@ -175,6 +175,10 @@
   [
    13.45,
    15.05
+  ],
+  [
+   2.7,
+   3.6
   ]
  ],
  "textura_cerveja_copo.mp4": [
@@ -189,6 +193,10 @@
   [
    23.1,
    999
+  ],
+  [
+   0,
+   999
   ]
  ],
  "textura_cerveja_chopp.mp4": [
@@ -198,6 +206,10 @@
   ],
   [
    3.6,
+   999
+  ],
+  [
+   0,
    999
   ]
  ],
@@ -565,6 +577,10 @@
   [
    57.7,
    60.05
+  ],
+  [
+   0,
+   999
   ]
  ],
  "gancho_mesa_casamento_decor.mp4": [
@@ -575,6 +591,10 @@
   [
    12.5,
    999
+  ],
+  [
+   0,
+   5.8
   ]
  ],
  "gancho_mesa_grazing_evento.mp4": [
@@ -619,6 +639,10 @@
   [
    9.5,
    12.5
+  ],
+  [
+   9.5,
+   16.5
   ]
  ],
  "processo_salgado_assado_massa.mp4": [
@@ -971,6 +995,10 @@
   [
    0,
    5.8
+  ],
+  [
+   0,
+   999
   ]
  ],
  "processo_tortinha_folhada_2.mp4": [
@@ -999,6 +1027,18 @@
   [
    0,
    1
+  ]
+ ],
+ "processo_pate_processador.mp4": [
+  [
+   45,
+   47
+  ]
+ ],
+ "textura_cafe_latte.mp4": [
+  [
+   0,
+   999
   ]
  ]
 }
