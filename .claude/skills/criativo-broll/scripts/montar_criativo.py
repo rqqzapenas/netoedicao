@@ -369,8 +369,9 @@ def main():
     copias = []
     for f in arquivos:
         dst = out / "assets" / "broll" / seguro(f.name)
-        if not dst.exists():
-            shutil.copy(f, dst)
+        st = f.stat()   # recopia se o clipe do banco mudou (ex.: recortado) — senão o render usa a cópia velha
+        if not dst.exists() or dst.stat().st_size != st.st_size or dst.stat().st_mtime < st.st_mtime:
+            shutil.copy2(f, dst)
         copias.append(dst)
     pool = Pool(copias, rng)
     for edl in spec.get("outros_ads", []):              # edl.json dos ads anteriores: evita repetir entre ads

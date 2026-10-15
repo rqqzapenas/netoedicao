@@ -310,3 +310,7 @@ A voz sai sempre em −16 LUFS na montagem. A música fica em −16 − `musica_
   rosto) e olhe a grade: quadro branco/vazio, máquina industrial, close desfocado → `evitar` e monte de novo.
 - CTA falado sem "botão" (ex.: "Me chama no WhatsApp agora"): a lista de frases inclui "me chama no whatsapp";
   se o Whisper errar a frase, use `cta_tempo` (início da frase − 0,2 s).
+- Disco da sessão: cada projeto copia o b-roll para `assets/broll` (~1 GB) e o HyperFrames guarda histórico de
+  render em `~/.cache/hyperframes/history` (~2 GB por render). Depois de entregar, apague `assets/broll` dos
+  projetos prontos, o render bruto (`full.mp4`) e as pastas antigas do histórico.
+- O montador recopia um clipe para `assets/broll` quando o arquivo do banco mudou (recorte, regravação).
